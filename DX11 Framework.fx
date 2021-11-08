@@ -23,8 +23,8 @@ cbuffer ConstantBuffer : register( b0 )
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;
-    float3 Normal : NORMAL;
     float4 Color : COLOR0;
+    float3 Normal : NORMAL;
 };
 
 //--------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL : NORMAL, float4 Color : COL
 	
 //	output.Color = Color * (1 - diffuseAmount) + DiffuseMtrl * diffuseAmount;
     
-	output.Color.rgb = Color;
+	output.Color.rgb = Color * diffuseAmount;
 	output.Color.a = DiffuseMtrl.a;
     
     
