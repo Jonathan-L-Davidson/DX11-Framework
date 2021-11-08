@@ -200,7 +200,7 @@ HRESULT Application::InitVertexBuffer()
         { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT3(0.816497f,0.333333f,0.408248f),        XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
         { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT3(-0.333333f,0.333333f,0.666667f),       XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
         { XMFLOAT3(-1.0f, 0.0f,-1.0f),      XMFLOAT3(-0.408248f,0.333333f,-0.816497f),      XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
-        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},
+        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,a),                       XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},
     };
 
     SimpleVertex planeVertices[] = {
