@@ -5,6 +5,15 @@
 //--------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------
+// Texture and Samplers
+//--------------------------------------------------------------------------------------
+Texture2D texDiffuse : register(t0);
+Texture2D texSpecular : register(t1);
+Texture2D texNormal : register(t2);
+SamplerState samLinear : register(s0);
+
+
+//--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
 cbuffer ConstantBuffer : register( b0 )
@@ -27,57 +36,37 @@ cbuffer ConstantBuffer : register( b0 )
 
     float SpecularPower;
 
-    float3 EyePos;
+    float3 EyePosW;
 }
 
 //--------------------------------------------------------------------------------------
 struct VS_OUTPUT
 {
     float4 Pos : SV_POSITION;
-    float4 Color : COLOR0;
-    float3 Normal : NORMAL;
+    float3 NormalW : NORMAL;
+    float3 PosW : POSITION;
+    float2 TexCoord : TEXCOORD0;
 };
 
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL : NORMAL, float4 Color : COLOR )
+VS_OUTPUT VS( float4 Pos : POSITION, float2 TexCoord : TEXCOORD, float3 NormalL : NORMAL )
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
 
+    // Normal stuff
+    output.NormalW = mul(float4(NormalL, 0.0f), World).xyz;
 
     output.Pos = mul( Pos, World);
-    
-    // Get the vector towards the position of the camera and the position of the vertices.
-    float3 toEye = normalize(EyePosW - output.Pos.xyz);
+    output.PosW = output.Pos.xyz;
     
     output.Pos = mul( output.Pos, View );
     output.Pos = mul( output.Pos, Projection );
     
-    
-    // Get the reflection from the normal to where the light is.
-    float3 r = reflect(-LightVecW, normalW);
+    output.TexCoord = TexCoord;
+    //output.Color = Color;
 
-    // Check angle of the reflection towards the camera position.
-    float specularAmount = pow(max(dot(r,ToEye)))
-
-    // Normal stuff
-	float3 normalW = mul(float4(NormalL, 0.0f), World).xyz;
-	normalW = normalize(normalW);
-    
-    // How much to brighten/darken an object.
-    float diffuseAmount = max(dot(LightVecW, normalW), 0.0f);
-	
-    // ambient light.
-    float4 ambientDiffuse = AmbientMtrl * AmbientLight;
-
-//	output.Color = Color * (1 - diffuseAmount) + DiffuseMtrl * diffuseAmount;
-    
-	output.Color.rgb = ambientDiffuse + diffuseAmount * Color;
-	output.Color.a = DiffuseMtrl.a;
-    
-    
-    
     return output;
 }
 
@@ -87,5 +76,34 @@ VS_OUTPUT VS( float4 Pos : POSITION, float3 NormalL : NORMAL, float4 Color : COL
 //--------------------------------------------------------------------------------------
 float4 PS( VS_OUTPUT input ) : SV_Target
 {
-    return input.Color;
+    input.NormalW = normalize(input.NormalW);
+    // Get the vector towards the position of the camera and the position of the vertices.
+    float3 toEye = normalize(EyePosW - input.PosW.xyz);
+
+
+    // Get the reflection from the normal to where the light is.
+    float3 r = reflect(-LightVecW, input.NormalW);
+
+    // Check angle of the reflection towards the camera position.
+    float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
+    float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
+
+
+    // How much to brighten/darken an object.
+    float diffuseAmount = max(dot(LightVecW, input.NormalW), 0.0f);
+
+    // ambient light.
+    float4 ambientDiffuse = AmbientMtrl * AmbientLight;
+
+    //	output.Color = Color * (1 - diffuseAmount) + DiffuseMtrl * diffuseAmount;
+
+    float4 textureColour = texDiffuse.Sample(samLinear, input.TexCoord);
+
+    float4 color;
+
+    color.rgb = ambientDiffuse + (diffuseAmount * textureColour) + specular;
+    color.a = DiffuseMtrl.a;
+
+
+    return color;
 }

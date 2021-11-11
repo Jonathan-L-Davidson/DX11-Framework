@@ -57,7 +57,11 @@ Application::Application()
 	_pSwapChain = nullptr;
 	_pRenderTargetView = nullptr;
 	_pVertexShader = nullptr;
-	_pPixelShader = nullptr;
+    _pPixelShader = nullptr;
+
+    _pTextureRV = nullptr;
+    _pSamplerLinear = nullptr;
+
     _pPyramidVertexBuffer = nullptr;
     _pPyramidIndexBuffer = nullptr;
     _pPlaneVertexBuffer = nullptr;
@@ -158,7 +162,7 @@ HRESULT Application::InitShadersAndInputLayout()
     D3D11_INPUT_ELEMENT_DESC layout[] =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
@@ -172,6 +176,10 @@ HRESULT Application::InitShadersAndInputLayout()
 	if (FAILED(hr))
         return hr;
 
+    // Send the pixel shader the texture data.
+    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
+    _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
+
     // Set the input layout
     _pImmediateContext->IASetInputLayout(_pVertexLayout);
 
@@ -184,53 +192,52 @@ HRESULT Application::InitVertexBuffer()
 
     // Create vertex buffer
 
-    // WAS POSITION : NORMAL : COLOR ===== NOW ===== POSITION : COLOR : NORMAL
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -1.0f, 1.0f, 1.0f ),     XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),   XMFLOAT3(-0.816497f,0.408248f, 0.408248),      },
-        { XMFLOAT3( 1.0f, 1.0f, 1.0f ),      XMFLOAT4( 0.0f, 1.0f, 0.0f, 1.0f ), XMFLOAT3(0.816497f, 0.408248f, 0.408248f),     },
-        { XMFLOAT3( -1.0f, -1.0f, 1.0f ),    XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ), XMFLOAT3(-0.666667f, -0.666667f, 0.333333f),   },
-        { XMFLOAT3( 1.0f, -1.0f, 1.0f ),     XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ), XMFLOAT3(0.408248f, -0.408248f, 0.816497f),    },
-        { XMFLOAT3( 1.0f, -1.0f, -1.0f ),    XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ), XMFLOAT3(0.666667f, -0.666667f, -0.333333f),   },
-        { XMFLOAT3( -1.0f, -1.0f, -1.0f ),   XMFLOAT4( 0.0f, 1.0f, 1.0f, 1.0f ), XMFLOAT3(-0.408248f, -0.408248f,-0.816497f),   },
-        { XMFLOAT3( 1.0f, 1.0f, -1.0f ),     XMFLOAT4( 1.0f, 0.0f, 1.0f, 1.0f ), XMFLOAT3(0.333333f, 0.666667f, -0.666667f),    },
-        { XMFLOAT3( -1.0f, 1.0f, -1.0f ),    XMFLOAT4( 0.5f, 0.5f, 0.5f, 1.0f ), XMFLOAT3(-0.816497f, 0.408248f, -0.408248f),   },
+        { XMFLOAT3( -1.0f, 1.0f, 1.0f ),     XMFLOAT2( 0.0f, 0.0f ),    XMFLOAT3(-0.816497f,0.408248f, 0.408248),      },
+        { XMFLOAT3( 1.0f, 1.0f, 1.0f ),      XMFLOAT2( 1.0f, 0.0f ),    XMFLOAT3(0.816497f, 0.408248f, 0.408248f),     },
+        { XMFLOAT3( -1.0f, -1.0f, 1.0f ),    XMFLOAT2( 0.0f, 1.0f ),    XMFLOAT3(-0.666667f, -0.666667f, 0.333333f),   },
+        { XMFLOAT3( 1.0f, -1.0f, 1.0f ),     XMFLOAT2( 1.0f, 1.0f ),    XMFLOAT3(0.408248f, -0.408248f, 0.816497f),    },
+        { XMFLOAT3( 1.0f, -1.0f, -1.0f ),    XMFLOAT2( 1.0f, 1.0f ),    XMFLOAT3(0.666667f, -0.666667f, -0.333333f),   },
+        { XMFLOAT3( -1.0f, -1.0f, -1.0f ),   XMFLOAT2( 0.0f, 1.0f ),    XMFLOAT3(-0.408248f, -0.408248f,-0.816497f),   },
+        { XMFLOAT3( 1.0f, 1.0f, -1.0f ),     XMFLOAT2( 1.0f, 0.0f ),    XMFLOAT3(0.333333f, 0.666667f, -0.666667f),    },
+        { XMFLOAT3( -1.0f, 1.0f, -1.0f ),    XMFLOAT2( 0.0f, 0.0f ),    XMFLOAT3(-0.816497f, 0.408248f, -0.408248f),   },
     };
 
     SimpleVertex pyramidVertices[] = {
-        { XMFLOAT3(1.0f, 0.0f,-1.0f),       XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),    XMFLOAT3(0.333333f,0.333333f,-0.666667f),       },
-        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),    XMFLOAT3(0.816497f,0.333333f,0.408248f),        },
-        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),    XMFLOAT3(-0.333333f,0.333333f,0.666667f),       },
-        { XMFLOAT3(-1.0f, 0.0f,-1.0f),      XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f),    XMFLOAT3(-0.408248f,0.333333f,-0.816497f),      },
-        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),    XMFLOAT3(0.0f,1.0f,0.0f),                       },
+        { XMFLOAT3(1.0f, 0.0f,-1.0f),       XMFLOAT2(1.0f, 1.0f),       XMFLOAT3(0.333333f,0.333333f,-0.666667f),       },
+        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT2(0.0f, 1.0f),       XMFLOAT3(0.816497f,0.333333f,0.408248f),        },
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT2(1.0f, 1.0f),       XMFLOAT3(-0.333333f,0.333333f,0.666667f),       },
+        { XMFLOAT3(-1.0f, 0.0f,-1.0f),      XMFLOAT2(0.0f, 1.0f),       XMFLOAT3(-0.408248f,0.333333f,-0.816497f),      },
+        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT2(0.5f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       },
     };
 
     SimpleVertex planeVertices[] = {
-        { XMFLOAT3(-2.0f, 0.0f, 2.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 0
-        { XMFLOAT3(-1.0f, 0.0f, 2.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 1
-        { XMFLOAT3( 0.0f, 0.0f, 2.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 2
-        { XMFLOAT3( 1.0f, 0.0f, 2.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 3
-        { XMFLOAT3( 2.0f, 0.0f, 2.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 4
-        { XMFLOAT3(-2.0f, 0.0f, 1.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 5
-        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 6
-        { XMFLOAT3( 0.0f, 0.0f, 1.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 7
-        { XMFLOAT3( 1.0f, 0.0f, 1.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 8
-        { XMFLOAT3( 2.0f, 0.0f, 1.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 9
-        { XMFLOAT3(-2.0f, 0.0f, 0.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 10
-        { XMFLOAT3(-1.0f, 0.0f, 0.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 11
-        { XMFLOAT3( 0.0f, 0.0f, 0.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 12
-        { XMFLOAT3( 1.0f, 0.0f, 0.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 13
-        { XMFLOAT3( 2.0f, 0.0f, 0.0f),      XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 14
-        { XMFLOAT3(-2.0f, 0.0f, -1.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 15
-        { XMFLOAT3(-1.0f, 0.0f, -1.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 16
-        { XMFLOAT3( 0.0f, 0.0f, -1.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 17
-        { XMFLOAT3( 1.0f, 0.0f, -1.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 18
-        { XMFLOAT3( 2.0f, 0.0f, -1.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 19
-        { XMFLOAT3(-2.0f, 0.0f, -2.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 20
-        { XMFLOAT3(-1.0f, 0.0f, -2.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 21
-        { XMFLOAT3( 0.0f, 0.0f, -2.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 22
-        { XMFLOAT3( 1.0f, 0.0f, -2.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 23
-        { XMFLOAT3( 2.0f, 0.0f, -2.0f),     XMFLOAT4(0.25f, 0.25f, 0.85f, 1.0f), XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 24
+        { XMFLOAT3(-2.0f, 0.0f, 2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 0
+        { XMFLOAT3(-1.0f, 0.0f, 2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 1
+        { XMFLOAT3(0.0f, 0.0f, 2.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 2
+        { XMFLOAT3(1.0f, 0.0f, 2.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 3
+        { XMFLOAT3(2.0f, 0.0f, 2.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 4
+        { XMFLOAT3(-2.0f, 0.0f, 1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 5
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 6
+        { XMFLOAT3(0.0f, 0.0f, 1.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 7
+        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 8
+        { XMFLOAT3(2.0f, 0.0f, 1.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 9
+        { XMFLOAT3(-2.0f, 0.0f, 0.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 10
+        { XMFLOAT3(-1.0f, 0.0f, 0.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 11
+        { XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 12
+        { XMFLOAT3(1.0f, 0.0f, 0.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 13
+        { XMFLOAT3(2.0f, 0.0f, 0.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 14
+        { XMFLOAT3(-2.0f, 0.0f, -1.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 15
+        { XMFLOAT3(-1.0f, 0.0f, -1.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 16
+        { XMFLOAT3(0.0f, 0.0f, -1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 17
+        { XMFLOAT3(1.0f, 0.0f, -1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 18
+        { XMFLOAT3(2.0f, 0.0f, -1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 19
+        { XMFLOAT3(-2.0f, 0.0f, -2.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 20
+        { XMFLOAT3(-1.0f, 0.0f, -2.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 21
+        { XMFLOAT3(0.0f, 0.0f, -2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 22
+        { XMFLOAT3(1.0f, 0.0f, -2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 23
+        { XMFLOAT3(2.0f, 0.0f, -2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 24
     };
 
 
@@ -433,7 +440,7 @@ HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
 
     // Create window
     _hInst = hInstance;
-    RECT rc = {0, 0, 640, 480};
+    RECT rc = {0, 0, 1920, 1200};
     AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
     _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
                          CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
@@ -597,6 +604,10 @@ HRESULT Application::InitDevice()
 	bd.CPUAccessFlags = 0;
     hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
 
+    if (FAILED(hr))
+        return hr;
+
+
     D3D11_RASTERIZER_DESC wfdesc;
     ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
     wfdesc.FillMode = D3D11_FILL_WIREFRAME;
@@ -605,6 +616,25 @@ HRESULT Application::InitDevice()
     
     if (FAILED(hr))
         return hr;
+
+
+
+    // Create the sample state
+    D3D11_SAMPLER_DESC sampDesc;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    hr = _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+
+    if (FAILED(hr))
+        return hr;
+
+    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
 
     return S_OK;
 }

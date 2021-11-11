@@ -6,15 +6,15 @@
 #include <directxmath.h>
 #include <directxcolors.h>
 #include "resource.h"
+#include "TextureLoader.h"
 
 using namespace DirectX;
 
 struct SimpleVertex
 {
     XMFLOAT3 Pos;
-    XMFLOAT4 Color;
+	XMFLOAT2 TexCoord;
 	XMFLOAT3 Normal;
-
 };
 
 struct ConstantBuffer
@@ -55,6 +55,10 @@ private:
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
+
+	ID3D11ShaderResourceView* _pTextureRV;
+	ID3D11SamplerState* _pSamplerLinear;
+
 	ID3D11Buffer*           _pVertexBuffer;
 	ID3D11Buffer*           _pIndexBuffer;
 	ID3D11Buffer*           _pPyramidVertexBuffer;
