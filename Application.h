@@ -27,6 +27,9 @@ struct ConstantBuffer
 	XMFLOAT3 mLightDirection;
 	XMFLOAT4 mDiffuseMaterial;
 	XMFLOAT4 mDiffuseLight;
+
+	XMFLOAT4 mAmbientMaterial;
+	XMFLOAT4 mAmbientLight;
 };
 
 class Application

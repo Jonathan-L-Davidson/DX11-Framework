@@ -717,9 +717,11 @@ void Application::Draw()
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
     cb.mTime = t;
-    cb.mLightDirection = XMFLOAT3(0.25f, 0.5f, 1.0f);
+    cb.mLightDirection = XMFLOAT3(0.25f, 1.0f, 0.25f);
     cb.mDiffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
     cb.mDiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+    cb.mAmbientLight = XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
+    cb.mAmbientMaterial= XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 
 
     // Set vertex buffer
