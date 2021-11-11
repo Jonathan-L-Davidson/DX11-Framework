@@ -30,6 +30,13 @@ struct ConstantBuffer
 
 	XMFLOAT4 mAmbientMaterial;
 	XMFLOAT4 mAmbientLight;
+
+	XMFLOAT4 mSpecularMaterial;
+	XMFLOAT4 mSpecularLight;
+
+	float mSpecularPower;
+
+	XMFLOAT3 mEyePosW; // Camera position in world space
 };
 
 class Application

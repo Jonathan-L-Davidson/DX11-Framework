@@ -685,7 +685,6 @@ void Application::Draw()
     _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
     _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-
 	XMMATRIX world = XMLoadFloat4x4(&_world);
 	XMMATRIX view = XMLoadFloat4x4(&_view);
 	XMMATRIX projection = XMLoadFloat4x4(&_projection);
@@ -717,11 +716,19 @@ void Application::Draw()
 	cb.mView = XMMatrixTranspose(view);
 	cb.mProjection = XMMatrixTranspose(projection);
     cb.mTime = t;
+
     cb.mLightDirection = XMFLOAT3(0.25f, 1.0f, 0.25f);
-    cb.mDiffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+
     cb.mDiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    cb.mAmbientLight = XMFLOAT4(0.9f, 0.9f, 0.9f, 1.0f);
-    cb.mAmbientMaterial= XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+    cb.mDiffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+
+    cb.mAmbientLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+    cb.mAmbientMaterial= XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+    
+    cb.mSpecularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+    cb.mSpecularMaterial = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+    cb.mSpecularPower = 10.0f;
+    cb.mEyePosW = XMFLOAT3(0.0f, 5.0f, -30.0f);
 
 
     // Set vertex buffer
