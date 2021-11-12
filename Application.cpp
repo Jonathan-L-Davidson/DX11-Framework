@@ -179,6 +179,10 @@ HRESULT Application::InitShadersAndInputLayout()
     // Send the pixel shader the texture data.
     CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
     _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_SPEC.dds", nullptr, &_pTextureRV);
+    _pImmediateContext->PSSetShaderResources(1, 1, &_pTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_NRM.dds", nullptr, &_pTextureRV);
+    _pImmediateContext->PSSetShaderResources(2, 1, &_pTextureRV);
 
     // Set the input layout
     _pImmediateContext->IASetInputLayout(_pVertexLayout);

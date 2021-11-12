@@ -80,12 +80,12 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     // Get the vector towards the position of the camera and the position of the vertices.
     float3 toEye = normalize(EyePosW - input.PosW.xyz);
 
-
     // Get the reflection from the normal to where the light is.
     float3 r = reflect(-LightVecW, input.NormalW);
 
     // Check angle of the reflection towards the camera position.
-    float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
+    float specularAmount = pow(max(dot(r, toEye), normalize(texSpecular.Sample(samLinear, input.TexCoord))), SpecularPower);
+
     float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
 
 
