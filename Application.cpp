@@ -59,7 +59,10 @@ Application::Application()
 	_pVertexShader = nullptr;
     _pPixelShader = nullptr;
 
-    _pTextureRV = nullptr;
+    _pCrateTextureRV = nullptr;
+    _pCrateSpecTextureRV = nullptr;
+    _pCrateNormTextureRV = nullptr;
+    _pHerculesTextureRV = nullptr;
     _pSamplerLinear = nullptr;
 
     _pPyramidVertexBuffer = nullptr;
@@ -95,6 +98,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
         return E_FAIL;
     }
+
+    _objMeshData = OBJLoader::Load("Hercules.obj", _pd3dDevice);
 
 	// Initialize the world matrix
 	XMStoreFloat4x4(&_world, XMMatrixIdentity());
@@ -177,12 +182,13 @@ HRESULT Application::InitShadersAndInputLayout()
         return hr;
 
     // Send the pixel shader the texture data.
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pTextureRV);
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pTextureRV);
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_SPEC.dds", nullptr, &_pTextureRV);
-    _pImmediateContext->PSSetShaderResources(1, 1, &_pTextureRV);
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_NRM.dds", nullptr, &_pTextureRV);
-    _pImmediateContext->PSSetShaderResources(2, 1, &_pTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pCrateTextureRV);
+    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_SPEC.dds", nullptr, &_pCrateSpecTextureRV);
+    _pImmediateContext->PSSetShaderResources(1, 1, &_pCrateSpecTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_NRM.dds", nullptr, &_pCrateNormTextureRV);
+    _pImmediateContext->PSSetShaderResources(2, 1, &_pCrateNormTextureRV);
+    CreateDDSTextureFromFile(_pd3dDevice, L"Hercules_COLOR.dds", nullptr, &_pHerculesTextureRV);
 
     // Set the input layout
     _pImmediateContext->IASetInputLayout(_pVertexLayout);
@@ -198,50 +204,50 @@ HRESULT Application::InitVertexBuffer()
 
     SimpleVertex vertices[] =
     {
-        { XMFLOAT3( -1.0f, 1.0f, 1.0f ),     XMFLOAT2( 0.0f, 0.0f ),    XMFLOAT3(-0.816497f,0.408248f, 0.408248),      },
-        { XMFLOAT3( 1.0f, 1.0f, 1.0f ),      XMFLOAT2( 1.0f, 0.0f ),    XMFLOAT3(0.816497f, 0.408248f, 0.408248f),     },
-        { XMFLOAT3( -1.0f, -1.0f, 1.0f ),    XMFLOAT2( 0.0f, 1.0f ),    XMFLOAT3(-0.666667f, -0.666667f, 0.333333f),   },
-        { XMFLOAT3( 1.0f, -1.0f, 1.0f ),     XMFLOAT2( 1.0f, 1.0f ),    XMFLOAT3(0.408248f, -0.408248f, 0.816497f),    },
-        { XMFLOAT3( 1.0f, -1.0f, -1.0f ),    XMFLOAT2( 1.0f, 1.0f ),    XMFLOAT3(0.666667f, -0.666667f, -0.333333f),   },
-        { XMFLOAT3( -1.0f, -1.0f, -1.0f ),   XMFLOAT2( 0.0f, 1.0f ),    XMFLOAT3(-0.408248f, -0.408248f,-0.816497f),   },
-        { XMFLOAT3( 1.0f, 1.0f, -1.0f ),     XMFLOAT2( 1.0f, 0.0f ),    XMFLOAT3(0.333333f, 0.666667f, -0.666667f),    },
-        { XMFLOAT3( -1.0f, 1.0f, -1.0f ),    XMFLOAT2( 0.0f, 0.0f ),    XMFLOAT3(-0.816497f, 0.408248f, -0.408248f),   },
+        { XMFLOAT3( -1.0f, 1.0f, 1.0f ),    XMFLOAT3(-0.816497f,0.408248f, 0.408248),       XMFLOAT2(0.0f, 0.0f), },
+        { XMFLOAT3( 1.0f, 1.0f, 1.0f ),     XMFLOAT3(0.816497f, 0.408248f, 0.408248f),      XMFLOAT2(1.0f, 0.0f), },
+        { XMFLOAT3( -1.0f, -1.0f, 1.0f ),   XMFLOAT3(-0.666667f, -0.666667f, 0.333333f),    XMFLOAT2(0.0f, 1.0f), },
+        { XMFLOAT3( 1.0f, -1.0f, 1.0f ),    XMFLOAT3(0.408248f, -0.408248f, 0.816497f),     XMFLOAT2(1.0f, 1.0f), },
+        { XMFLOAT3( 1.0f, -1.0f, -1.0f ),   XMFLOAT3(0.666667f, -0.666667f, -0.333333f),    XMFLOAT2(1.0f, 1.0f), },
+        { XMFLOAT3( -1.0f, -1.0f, -1.0f ),  XMFLOAT3(-0.408248f, -0.408248f,-0.816497f),    XMFLOAT2(0.0f, 1.0f), },
+        { XMFLOAT3( 1.0f, 1.0f, -1.0f ),    XMFLOAT3(0.333333f, 0.666667f, -0.666667f),     XMFLOAT2(1.0f, 0.0f), },
+        { XMFLOAT3( -1.0f, 1.0f, -1.0f ),   XMFLOAT3(-0.816497f, 0.408248f, -0.408248f),    XMFLOAT2(0.0f, 0.0f), },
     };
 
     SimpleVertex pyramidVertices[] = {
-        { XMFLOAT3(1.0f, 0.0f,-1.0f),       XMFLOAT2(1.0f, 1.0f),       XMFLOAT3(0.333333f,0.333333f,-0.666667f),       },
-        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT2(0.0f, 1.0f),       XMFLOAT3(0.816497f,0.333333f,0.408248f),        },
-        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT2(1.0f, 1.0f),       XMFLOAT3(-0.333333f,0.333333f,0.666667f),       },
-        { XMFLOAT3(-1.0f, 0.0f,-1.0f),      XMFLOAT2(0.0f, 1.0f),       XMFLOAT3(-0.408248f,0.333333f,-0.816497f),      },
-        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT2(0.5f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       },
+        { XMFLOAT3(1.0f, 0.0f,-1.0f),       XMFLOAT3(0.333333f,0.333333f,-0.666667f),       XMFLOAT2(1.0f, 1.0f), },
+        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT3(0.816497f,0.333333f,0.408248f),        XMFLOAT2(0.0f, 1.0f), },
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT3(-0.333333f,0.333333f,0.666667f),       XMFLOAT2(1.0f, 1.0f), },
+        { XMFLOAT3(-1.0f, 0.0f,-1.0f),      XMFLOAT3(-0.408248f,0.333333f,-0.816497f),      XMFLOAT2(0.0f, 1.0f), },
+        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.5f, 0.0f), },
     };
 
     SimpleVertex planeVertices[] = {
-        { XMFLOAT3(-2.0f, 0.0f, 2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 0
-        { XMFLOAT3(-1.0f, 0.0f, 2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 1
-        { XMFLOAT3(0.0f, 0.0f, 2.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 2
-        { XMFLOAT3(1.0f, 0.0f, 2.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 3
-        { XMFLOAT3(2.0f, 0.0f, 2.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 4
-        { XMFLOAT3(-2.0f, 0.0f, 1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 5
-        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 6
-        { XMFLOAT3(0.0f, 0.0f, 1.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 7
-        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 8
-        { XMFLOAT3(2.0f, 0.0f, 1.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 9
-        { XMFLOAT3(-2.0f, 0.0f, 0.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 10
-        { XMFLOAT3(-1.0f, 0.0f, 0.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 11
-        { XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 12
-        { XMFLOAT3(1.0f, 0.0f, 0.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 13
-        { XMFLOAT3(2.0f, 0.0f, 0.0f),       XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 14
-        { XMFLOAT3(-2.0f, 0.0f, -1.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 15
-        { XMFLOAT3(-1.0f, 0.0f, -1.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 16
-        { XMFLOAT3(0.0f, 0.0f, -1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 17
-        { XMFLOAT3(1.0f, 0.0f, -1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 18
-        { XMFLOAT3(2.0f, 0.0f, -1.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 19
-        { XMFLOAT3(-2.0f, 0.0f, -2.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 20
-        { XMFLOAT3(-1.0f, 0.0f, -2.0f),     XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 21
-        { XMFLOAT3(0.0f, 0.0f, -2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 22
-        { XMFLOAT3(1.0f, 0.0f, -2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 23
-        { XMFLOAT3(2.0f, 0.0f, -2.0f),      XMFLOAT2(0.25f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       }, // 24
+        { XMFLOAT3(-2.0f, 0.0f, 2.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 0
+        { XMFLOAT3(-1.0f, 0.0f, 2.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 1
+        { XMFLOAT3(0.0f, 0.0f, 2.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 2
+        { XMFLOAT3(1.0f, 0.0f, 2.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 3
+        { XMFLOAT3(2.0f, 0.0f, 2.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 4
+        { XMFLOAT3(-2.0f, 0.0f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 5
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 6
+        { XMFLOAT3(0.0f, 0.0f, 1.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 7
+        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 8
+        { XMFLOAT3(2.0f, 0.0f, 1.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 9
+        { XMFLOAT3(-2.0f, 0.0f, 0.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 10
+        { XMFLOAT3(-1.0f, 0.0f, 0.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 11
+        { XMFLOAT3(0.0f, 0.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 12
+        { XMFLOAT3(1.0f, 0.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 13
+        { XMFLOAT3(2.0f, 0.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 14
+        { XMFLOAT3(-2.0f, 0.0f, -1.0f),     XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 15
+        { XMFLOAT3(-1.0f, 0.0f, -1.0f),     XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 16
+        { XMFLOAT3(0.0f, 0.0f, -1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 17
+        { XMFLOAT3(1.0f, 0.0f, -1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 18
+        { XMFLOAT3(2.0f, 0.0f, -1.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 19
+        { XMFLOAT3(-2.0f, 0.0f, -2.0f),     XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 20
+        { XMFLOAT3(-1.0f, 0.0f, -2.0f),     XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 21
+        { XMFLOAT3(0.0f, 0.0f, -2.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 22
+        { XMFLOAT3(1.0f, 0.0f, -2.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 23
+        { XMFLOAT3(2.0f, 0.0f, -2.0f),      XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT2(0.25f, 1.0f),}, // 24
     };
 
 
@@ -800,29 +806,32 @@ void Application::Draw()
 	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
 	_pImmediateContext->DrawIndexed(18, 0, 0);        
 
-    // Switch to rendering the cube
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
-    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    // Switch to rendering the Hercules.obj
+    _pImmediateContext->IASetVertexBuffers(0, 1, &_objMeshData.VertexBuffer, &_objMeshData.VBStride, &_objMeshData.VBOffset);
+    _pImmediateContext->IASetIndexBuffer(_objMeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    _pImmediateContext->PSSetShaderResources(0, 1, &_pHerculesTextureRV);
 
     world = XMLoadFloat4x4(&_world2);
     cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
+    _pImmediateContext->DrawIndexed(_objMeshData.IndexCount, 0, 0);
 
     world = XMLoadFloat4x4(&_world3);
     cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
+    _pImmediateContext->DrawIndexed(_objMeshData.IndexCount, 0, 0);
 
     world = XMLoadFloat4x4(&_world4);
     cb.mWorld = XMMatrixTranspose(world);
     _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
+    _pImmediateContext->DrawIndexed(_objMeshData.IndexCount, 0, 0);
 
 
+    
     // Switch to rendering the pyramid
     _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
     _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
 
 
     world = XMLoadFloat4x4(&_world5);

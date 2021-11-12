@@ -7,40 +7,13 @@
 #include <directxcolors.h>
 #include "resource.h"
 #include "TextureLoader.h"
+#include "OBJLoader.h"
+#include "Structures.h"
 
 using namespace DirectX;
 
-struct SimpleVertex
-{
-    XMFLOAT3 Pos;
-	XMFLOAT2 TexCoord;
-	XMFLOAT3 Normal;
-};
 
-struct ConstantBuffer
-{
-	XMMATRIX mWorld;
-	XMMATRIX mView;
-	XMMATRIX mProjection;
-	float mTime;
-
-	XMFLOAT3 mLightDirection;
-	XMFLOAT4 mDiffuseMaterial;
-	XMFLOAT4 mDiffuseLight;
-
-	XMFLOAT4 mAmbientMaterial;
-	XMFLOAT4 mAmbientLight;
-
-	XMFLOAT4 mSpecularMaterial;
-	XMFLOAT4 mSpecularLight;
-
-	float mSpecularPower;
-
-	XMFLOAT3 mEyePosW; // Camera position in world space
-};
-
-class Application
-{
+class Application {
 private:
 	HINSTANCE               _hInst;
 	HWND                    _hWnd;
@@ -56,7 +29,10 @@ private:
 	ID3D11PixelShader*      _pPixelShader;
 	ID3D11InputLayout*      _pVertexLayout;
 
-	ID3D11ShaderResourceView* _pTextureRV;
+	ID3D11ShaderResourceView* _pCrateTextureRV;
+	ID3D11ShaderResourceView* _pCrateSpecTextureRV;
+	ID3D11ShaderResourceView* _pCrateNormTextureRV;
+	ID3D11ShaderResourceView* _pHerculesTextureRV;
 	ID3D11SamplerState* _pSamplerLinear;
 
 	ID3D11Buffer*           _pVertexBuffer;
@@ -76,6 +52,7 @@ private:
 	bool					_wireFrameToggle = false;
 	UINT					_lastInput = 0;
 
+	MeshData _objMeshData;
 private:
 	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
