@@ -15,6 +15,9 @@
     <Filter Include="Resource Files\OBJLoader">
       <UniqueIdentifier>{0036b720-0eac-4678-a69f-680b839ca25e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\HerculesObj">
+      <UniqueIdentifier>{89e77e00-f0d0-483a-8ad8-2d983f57e70f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -60,6 +63,9 @@
     </Image>
     <Image Include="Crate_NRM.dds">
       <Filter>Resource Files\CrateTextures</Filter>
+    </Image>
+    <Image Include="Hercules_COLOR.dds">
+      <Filter>Resource Files\HerculesObj</Filter>
     </Image>
   </ItemGroup>
 </Project>

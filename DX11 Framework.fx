@@ -8,8 +8,8 @@
 // Texture and Samplers
 //--------------------------------------------------------------------------------------
 Texture2D texDiffuse : register(t0);
-Texture2D texSpecular : register(t1);
-Texture2D texNormal : register(t2);
+//Texture2D texSpecular : register(t1);
+//Texture2D texNormal : register(t2);
 SamplerState samLinear : register(s0);
 
 
@@ -51,7 +51,7 @@ struct VS_OUTPUT
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-VS_OUTPUT VS( float4 Pos : POSITION, float2 TexCoord : TEXCOORD, float3 NormalL : NORMAL )
+VS_OUTPUT VS(float4 Pos : POSITION, float3 NormalL : NORMAL, float2 TexCoord : TEXCOORD)
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
 
@@ -84,7 +84,8 @@ float4 PS( VS_OUTPUT input ) : SV_Target
     float3 r = reflect(-LightVecW, input.NormalW);
 
     // Check angle of the reflection towards the camera position.
-    float specularAmount = pow(max(dot(r, toEye), normalize(texSpecular.Sample(samLinear, input.TexCoord))), SpecularPower);
+    //float specularAmount = pow(max(dot(r, toEye), normalize(texSpecular.Sample(samLinear, input.TexCoord))), SpecularPower);
+    float specularAmount = pow(max(dot(r, toEye), 0.0f), SpecularPower);
 
     float3 specular = specularAmount * (SpecularMtrl * SpecularLight).rgb;
 
@@ -101,7 +102,7 @@ float4 PS( VS_OUTPUT input ) : SV_Target
 
     float4 color;
 
-    color.rgb = ambientDiffuse + (diffuseAmount * textureColour) + specular;
+    color.rgb = (ambientDiffuse + diffuseAmount + specular) * textureColour;
     color.a = DiffuseMtrl.a;
 
 
