@@ -17,7 +17,7 @@ using namespace DirectX;
 class Application {
 private:
 	HINSTANCE               _hInst;
-	GraphicManager			_graphicManager;
+	GraphicManager*			_graphicManager;
 
 	ID3D11VertexShader*     _pVertexShader;
 	ID3D11PixelShader*      _pPixelShader;

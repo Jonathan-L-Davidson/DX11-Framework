@@ -384,6 +384,7 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DxDevice.cpp" />
     <ClCompile Include="GraphicManager.cpp" />
+    <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -396,6 +397,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="DxDevice.h" />
     <ClInclude Include="GraphicManager.h" />
+    <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="OBJLoader.h" />
     <CLInclude Include="resource.h" />
     <ClInclude Include="Structures.h" />

@@ -53,20 +53,14 @@ Application::~Application()
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
 
-
-    _window = new Window(hInstance, nCmdShow, WINDOW_NAME, WINDOW_CLASS);
+    _graphicManager = new GraphicManager();
     
-    if (FAILED(_window->Initialise()))
-	{
+    if (FAILED(_graphicManager->Initialise(hInstance, nCmdShow, WINDOW_NAME, WINDOW_CLASS))) {
+        _graphicManager->Destroy();
         return E_FAIL;
 	}
 
-    if (FAILED(InitDevice()))
-    {
-        Cleanup();
 
-        return E_FAIL;
-    }
 
     _objMeshData = OBJLoader::Load("Hercules.obj", _pd3dDevice);
 
@@ -502,7 +496,6 @@ void Application::Update()
 
     XMStoreFloat4x4(&_world6, XMMatrixScaling(0.5f, 0.5f, 0.5f) * XMMatrixRotationY(t * 2) * XMMatrixRotationX(50) 
         * XMMatrixTranslation(12.0f, 0, 0) * XMMatrixRotationY(t * 0.7) * XMMatrixTranslation(3.0f, 0, 0));
-
     XMStoreFloat4x4(&_world7, XMMatrixScaling(10, 1.0f, 10) * XMMatrixTranslation(0, -5.0f, 0));
 }
 

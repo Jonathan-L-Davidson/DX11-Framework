@@ -14,13 +14,22 @@ GraphicManager::~GraphicManager() {
 }
 
 void GraphicManager::Destroy() {
-    if (_constantBuffer) _constantBuffer->Release();
-    if (_depthStencilBuffer) _depthStencilBuffer->Release();
-    if (_depthStencilView) _depthStencilView->Release();
 
-    if (_renderTargetView) _renderTargetView->Release();
+    if (_dxDevice) _dxDevice->Destroy();
+    _dxDevice = nullptr;
+
+    if (_window) _window->Destroy();
+    _window = nullptr;
+
+    if (_constantBuffer) _constantBuffer->Release();
     if (_swapChain) _swapChain->Release();
+    if (_depthStencilView) _depthStencilView->Release();
+    if (_depthStencilBuffer) _depthStencilBuffer->Release();
+    if (_renderTargetView) _renderTargetView->Release();
     if (_rasterState) _rasterState->Release();
+
+    _d3dDevice = nullptr;
+    _immediateContext = nullptr;
 }
 
 
