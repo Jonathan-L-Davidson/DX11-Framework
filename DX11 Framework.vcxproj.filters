@@ -18,30 +18,61 @@
     <Filter Include="Resource Files\HerculesObj">
       <UniqueIdentifier>{89e77e00-f0d0-483a-8ad8-2d983f57e70f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\TextureLoader">
+      <UniqueIdentifier>{5ff33918-c1b1-471c-a034-3f87a20f3263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_Headers">
+      <UniqueIdentifier>{6419d953-d3ac-4919-b2c5-809e15ceea10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_Source">
+      <UniqueIdentifier>{6c554004-185b-4433-bab8-023807355316}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
-    <ClInclude Include="TextureLoader.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="OBJLoader.h">
       <Filter>Resource Files\OBJLoader</Filter>
     </ClInclude>
-    <ClInclude Include="Structures.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="DxDevice.h" />
+    <ClInclude Include="Structures.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="DxDevice.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureLoader.h">
+      <Filter>Resource Files\TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicManager.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
-    <ClCompile Include="DX11 Framework.cpp" />
-    <ClCompile Include="TextureLoader.cpp">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="OBJLoader.cpp">
       <Filter>Resource Files\OBJLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp" />
-    <ClCompile Include="DxDevice.cpp" />
+    <ClCompile Include="TextureLoader.cpp">
+      <Filter>Resource Files\TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DX11 Framework.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DxDevice.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicManager.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
@@ -52,6 +83,7 @@
     <None Include="DX11 Framework.fx">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="TODO.md" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX11 Framework.rc">

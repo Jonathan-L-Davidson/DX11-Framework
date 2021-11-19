@@ -27,14 +27,8 @@
 Application::Application()
 {
 	_hInst = nullptr;
-	_window = nullptr;
-	_driverType = D3D_DRIVER_TYPE_NULL;
-	_featureLevel = D3D_FEATURE_LEVEL_11_0;
-	_pd3dDevice = nullptr;
-	_pImmediateContext = nullptr;
-	_pSwapChain = nullptr;
-	_pRenderTargetView = nullptr;
-	_pVertexShader = nullptr;
+
+    _pVertexShader = nullptr;
     _pPixelShader = nullptr;
 
     _pCrateTextureRV = nullptr;
@@ -50,7 +44,6 @@ Application::Application()
 	_pVertexLayout = nullptr;
 	_pVertexBuffer = nullptr;
 	_pIndexBuffer = nullptr;
-	_pConstantBuffer = nullptr;
 }
 
 Application::~Application()
@@ -59,6 +52,8 @@ Application::~Application()
 }
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
+
+
     _window = new Window(hInstance, nCmdShow, WINDOW_NAME, WINDOW_CLASS);
     
     if (FAILED(_window->Initialise()))
@@ -94,6 +89,24 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
 HRESULT Application::InitShadersAndInputLayout()
 {
 	HRESULT hr;
+
+    // Create the sample state
+    D3D11_SAMPLER_DESC sampDesc;
+    ZeroMemory(&sampDesc, sizeof(sampDesc));
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+    sampDesc.MinLOD = 0;
+    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+    hr = _d3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
+
+    if (FAILED(hr))
+        return hr;
+
+    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
+
 
     // Compile the vertex shader
     ID3DBlob* pVSBlob = nullptr;
@@ -437,165 +450,8 @@ HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoin
     return S_OK;
 }
 
-HRESULT Application::InitDevice()
-{
-    HRESULT hr = S_OK;
-
-    UINT createDeviceFlags = 0;
-
-#ifdef _DEBUG
-    createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
-#endif
-
-    D3D_DRIVER_TYPE driverTypes[] =
-    {
-        D3D_DRIVER_TYPE_HARDWARE,
-        D3D_DRIVER_TYPE_WARP,
-        D3D_DRIVER_TYPE_REFERENCE,
-    };
-
-    UINT numDriverTypes = ARRAYSIZE(driverTypes);
-
-    D3D_FEATURE_LEVEL featureLevels[] =
-    {
-        D3D_FEATURE_LEVEL_11_0,
-        D3D_FEATURE_LEVEL_10_1,
-        D3D_FEATURE_LEVEL_10_0,
-    };
-
-	UINT numFeatureLevels = ARRAYSIZE(featureLevels);
-
-    DXGI_SWAP_CHAIN_DESC sd;
-    ZeroMemory(&sd, sizeof(sd));
-    sd.BufferCount = 1;
-    sd.BufferDesc.Width = _WindowWidth;
-    sd.BufferDesc.Height = _WindowHeight;
-    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-    sd.BufferDesc.RefreshRate.Numerator = 60;
-    sd.BufferDesc.RefreshRate.Denominator = 1;
-    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-    sd.OutputWindow = _hWnd;
-    sd.SampleDesc.Count = 1;
-    sd.SampleDesc.Quality = 0;
-    sd.Windowed = TRUE;
-
-    for (UINT driverTypeIndex = 0; driverTypeIndex < numDriverTypes; driverTypeIndex++)
-    {
-        _driverType = driverTypes[driverTypeIndex];
-        hr = D3D11CreateDeviceAndSwapChain(nullptr, _driverType, nullptr, createDeviceFlags, featureLevels, numFeatureLevels,
-                                           D3D11_SDK_VERSION, &sd, &_pSwapChain, &_pd3dDevice, &_featureLevel, &_pImmediateContext);
-        if (SUCCEEDED(hr))
-            break;
-    }
-
-    if (FAILED(hr))
-        return hr;
-
-    // Create a render target view
-    ID3D11Texture2D* pBackBuffer = nullptr;
-    hr = _pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer);
-
-    if (FAILED(hr))
-        return hr;
-
-    hr = _pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_pRenderTargetView);
-    pBackBuffer->Release();
-
-    if (FAILED(hr))
-        return hr;
-
-
-    // Setup Depth Buffer
-    D3D11_TEXTURE2D_DESC depthStencilDesc; // Descriptor is the way we create Texture2Ds in Dx11
-
-    depthStencilDesc.Width = _WindowWidth;
-    depthStencilDesc.Height = _WindowHeight;
-
-    depthStencilDesc.MipLevels = 1; // TODO: Check if this is mipmapping or not and is on basic level.
-    depthStencilDesc.ArraySize = 1;
-    depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-    depthStencilDesc.SampleDesc.Count = 1;
-    depthStencilDesc.SampleDesc.Quality = 0;
-    depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
-    depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-    depthStencilDesc.CPUAccessFlags = 0;
-    depthStencilDesc.MiscFlags = 0;
-
-    _pd3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &_pDepthStencilBuffer);
-    if (_pDepthStencilBuffer) {
-        _pd3dDevice->CreateDepthStencilView(_pDepthStencilBuffer, nullptr, &_pDepthStencilView);
-    }
-
-    _pImmediateContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
-
-    // Setup the viewport
-    D3D11_VIEWPORT vp;
-    vp.Width = (FLOAT)_WindowWidth;
-    vp.Height = (FLOAT)_WindowHeight;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    _pImmediateContext->RSSetViewports(1, &vp);
-
-	InitShadersAndInputLayout();
-
-	InitVertexBuffer();
-
-	InitIndexBuffer();
-
-    // Set primitive topology
-    _pImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Create the constant buffer
-	D3D11_BUFFER_DESC bd;
-	ZeroMemory(&bd, sizeof(bd));
-	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ConstantBuffer);
-	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	bd.CPUAccessFlags = 0;
-    hr = _pd3dDevice->CreateBuffer(&bd, nullptr, &_pConstantBuffer);
-
-    if (FAILED(hr))
-        return hr;
-
-
-    D3D11_RASTERIZER_DESC wfdesc;
-    ZeroMemory(&wfdesc, sizeof(D3D11_RASTERIZER_DESC));
-    wfdesc.FillMode = D3D11_FILL_WIREFRAME;
-    wfdesc.CullMode = D3D11_CULL_NONE;
-    hr = _pd3dDevice->CreateRasterizerState(&wfdesc, &_wireFrame);
-    
-    if (FAILED(hr))
-        return hr;
-
-
-
-    // Create the sample state
-    D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD = 0;
-    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    hr = _pd3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-
-    if (FAILED(hr))
-        return hr;
-
-    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
-
-    return S_OK;
-}
-
 void Application::Cleanup()
 {
-    if (_pImmediateContext) _pImmediateContext->ClearState();
-
-    if (_pConstantBuffer) _pConstantBuffer->Release();
     if (_pVertexBuffer) _pVertexBuffer->Release();
     if (_pIndexBuffer) _pIndexBuffer->Release();
     if (_pVertexLayout) _pVertexLayout->Release();
@@ -605,14 +461,6 @@ void Application::Cleanup()
     if (_pPlaneIndexBuffer) _pPlaneIndexBuffer->Release();
     if (_pVertexShader) _pVertexShader->Release();
     if (_pPixelShader) _pPixelShader->Release();
-    if (_pDepthStencilBuffer) _pDepthStencilBuffer->Release();
-    if (_pDepthStencilView) _pDepthStencilView->Release();
-
-    if (_pRenderTargetView) _pRenderTargetView->Release();
-    if (_pSwapChain) _pSwapChain->Release();
-    if (_pImmediateContext) _pImmediateContext->Release();
-    if (_pd3dDevice) _pd3dDevice->Release();
-    if (_wireFrame) _wireFrame->Release();
 }
 
 void Application::Update()
