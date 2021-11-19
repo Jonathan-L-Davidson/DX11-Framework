@@ -1,5 +1,9 @@
 #include "Application.h"
 
+
+#define WINDOW_NAME L"DX11 Framework"
+#define WINDOW_CLASS L"DX11 Framework"
+
 // New datatypes/procs I need to learn:
 // HDC - Handler for Device Context
 // PAINTSTRUCT - contains app info to "paint" the client area?? - NEED MORE INFO
@@ -20,36 +24,10 @@
 //  
 //
 
-
-
-
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    PAINTSTRUCT ps;
-    HDC hdc;
-
-    switch (message)
-    {
-        case WM_PAINT:
-            hdc = BeginPaint(hWnd, &ps);
-            EndPaint(hWnd, &ps);
-            break;
-
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            break;
-
-        default:
-            return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-
-    return 0;
-}
-
 Application::Application()
 {
 	_hInst = nullptr;
-	_hWnd = nullptr;
+	_window = nullptr;
 	_driverType = D3D_DRIVER_TYPE_NULL;
 	_featureLevel = D3D_FEATURE_LEVEL_11_0;
 	_pd3dDevice = nullptr;
@@ -80,17 +58,13 @@ Application::~Application()
 	Cleanup();
 }
 
-HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
-{
-    if (FAILED(InitWindow(hInstance, nCmdShow)))
+HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
+    _window = new Window(hInstance, nCmdShow, WINDOW_NAME, WINDOW_CLASS);
+    
+    if (FAILED(_window->Initialise()))
 	{
         return E_FAIL;
 	}
-
-    RECT rc;
-    GetClientRect(_hWnd, &rc);
-    _WindowWidth = rc.right - rc.left;
-    _WindowHeight = rc.bottom - rc.top;
 
     if (FAILED(InitDevice()))
     {
@@ -112,7 +86,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	XMStoreFloat4x4(&_view, XMMatrixLookAtLH(Eye, At, Up));
 
     // Initialize the projection matrix
-	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _WindowWidth / (FLOAT) _WindowHeight, 0.01f, 100.0f));
+	XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _window->GetWidth() / (FLOAT)_window->GetHeight(), 0.01f, 100.0f));
 
 	return S_OK;
 }
@@ -430,39 +404,6 @@ HRESULT Application::InitIndexBuffer()
 	return S_OK;
 }
 
-HRESULT Application::InitWindow(HINSTANCE hInstance, int nCmdShow)
-{
-    // Register class
-    WNDCLASSEX wcex;
-    wcex.cbSize = sizeof(WNDCLASSEX);
-    wcex.style = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc = WndProc;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
-    wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    wcex.hCursor = LoadCursor(NULL, IDC_ARROW );
-    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wcex.lpszMenuName = nullptr;
-    wcex.lpszClassName = L"TutorialWindowClass";
-    wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-    if (!RegisterClassEx(&wcex))
-        return E_FAIL;
-
-    // Create window
-    _hInst = hInstance;
-    RECT rc = {0, 0, 1920, 1200};
-    AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-    _hWnd = CreateWindow(L"TutorialWindowClass", L"DX11 Framework", WS_OVERLAPPEDWINDOW,
-                         CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance,
-                         nullptr);
-    if (!_hWnd)
-		return E_FAIL;
-
-    ShowWindow(_hWnd, nCmdShow);
-
-    return S_OK;
-}
 
 HRESULT Application::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {

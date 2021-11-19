@@ -28,6 +28,8 @@
       <Filter>Resource Files\OBJLoader</Filter>
     </ClInclude>
     <ClInclude Include="Structures.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="DxDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -38,6 +40,8 @@
     <ClCompile Include="OBJLoader.cpp">
       <Filter>Resource Files\OBJLoader</Filter>
     </ClCompile>
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="DxDevice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

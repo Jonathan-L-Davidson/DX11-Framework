@@ -9,6 +9,7 @@
 #include "TextureLoader.h"
 #include "OBJLoader.h"
 #include "Structures.h"
+#include "Window.h"
 
 using namespace DirectX;
 
@@ -16,11 +17,9 @@ using namespace DirectX;
 class Application {
 private:
 	HINSTANCE               _hInst;
-	HWND                    _hWnd;
-	D3D_DRIVER_TYPE         _driverType;
-	D3D_FEATURE_LEVEL       _featureLevel;
-	ID3D11Device*           _pd3dDevice;
-	ID3D11DeviceContext*    _pImmediateContext;
+
+	Window*					_window;
+
 	IDXGISwapChain*         _pSwapChain;
 	ID3D11DepthStencilView* _pDepthStencilView;
 	ID3D11Texture2D*		_pDepthStencilBuffer;
@@ -54,16 +53,12 @@ private:
 
 	MeshData _objMeshData;
 private:
-	HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 	HRESULT InitDevice();
 	void Cleanup();
 	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 	HRESULT InitShadersAndInputLayout();
 	HRESULT InitVertexBuffer();
 	HRESULT InitIndexBuffer();
-
-	UINT _WindowHeight;
-	UINT _WindowWidth;
 
 public:
 	Application();
