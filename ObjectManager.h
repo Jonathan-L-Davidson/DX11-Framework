@@ -10,6 +10,10 @@
 #include "OBJLoader.h"
 #include "Structures.h"
 
+class Texture {
+	ID3D11ShaderResourceView* _texture
+};
+
 class Shader {
 
 };
@@ -21,6 +25,7 @@ private:
 	XMFLOAT4X4	_scale;
 	MeshData*	_meshData;
 	Shader*		_shader;
+	Texture*	_texture;
 
 	XMFLOAT4X4	_world;
 public:
@@ -35,6 +40,7 @@ public:
 	void LoadShader(Shader* shader);
 
 	void Update();
+	void Draw(ID3D11DeviceContext* immediateContext, XMMATRIX view, XMMATRIX projection, float t);
 
 	void UpdateWorldCoords();
 
@@ -73,7 +79,7 @@ public:
 	void SetScale(XMVECTOR scale) { XMStoreFloat4x4(&_scale, XMMatrixScalingFromVector(scale)); };
 	XMMATRIX GetScale() { return XMLoadFloat4x4(&_scale); };
 
-
+	XMMATRIX GetWorld() { return XMLoadFloat4x4(&_world); };
 };
 
 class ObjectManager {

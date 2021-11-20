@@ -1,7 +1,12 @@
 #pragma once
+#include <d3d11_1.h>
+#include <d3dcompiler.h>
+#include <directxmath.h>
+#include <directxcolors.h>
 #include "DxDevice.h"
 #include "Window.h"
 #include "Structures.h"
+#include "ObjectManager.h"
 
 class GraphicManager {
 private:
@@ -18,6 +23,11 @@ private:
 	ID3D11Device*				_d3dDevice;			// Pointer gotten from DxDevice
 	ID3D11DeviceContext*		_immediateContext;	// Pointer gotten from DxDevice
 
+	XMFLOAT4X4					_world;
+
+private:
+	void Draw();
+
 public:
 	GraphicManager();
 	~GraphicManager();
@@ -25,7 +35,7 @@ public:
 	void Destroy();
 	HRESULT Initialise(HINSTANCE hInstance, int nCmdShow, LPCWSTR windowName, LPCWSTR windowClass);
 
-
+	void Update();
 
 public:
 	ID3D11Buffer*			GetCB()				{ return _constantBuffer; }; // Get ConstantBuffer

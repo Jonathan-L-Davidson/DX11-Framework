@@ -499,161 +499,165 @@ void Application::Update()
     XMStoreFloat4x4(&_world7, XMMatrixScaling(10, 1.0f, 10) * XMMatrixTranslation(0, -5.0f, 0));
 }
 
-void Application::Draw()
-{
-    //
-    // Clear the back buffer
-    //
-    float ClearColor[4] = {0.05f, 0.05f, 0.05f, 1.0f}; // red,green,blue,alpha
-    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
-    _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-
-	XMMATRIX world = XMLoadFloat4x4(&_world);
-	XMMATRIX view = XMLoadFloat4x4(&_view);
-	XMMATRIX projection = XMLoadFloat4x4(&_projection);
-    
-    //
-    // Update variables
-    //
-    
-    // TODO: Make a "get time" or make it a global variable.
-    static float t = 0.0f;
-
-    if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
-    {
-        t += (float)XM_PI * 0.0125f;
-    }
-    else
-    {
-        static DWORD dwTimeStart = 0;
-        DWORD dwTimeCur = GetTickCount64();
-
-        if (dwTimeStart == 0)
-            dwTimeStart = dwTimeCur;
-
-        t = (dwTimeCur - dwTimeStart) / 1000.0f;
-    }
-
-    ConstantBuffer cb;
-	cb.mWorld = XMMatrixTranspose(world);
-	cb.mView = XMMatrixTranspose(view);
-	cb.mProjection = XMMatrixTranspose(projection);
-    cb.mTime = t;
-
-    cb.mLightDirection = XMFLOAT3(0.25f, 1.0f, 0.25f);
-
-    cb.mDiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-    cb.mDiffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
-
-    cb.mAmbientLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-    cb.mAmbientMaterial= XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-    
-    cb.mSpecularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
-    cb.mSpecularMaterial = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
-    cb.mSpecularPower = 10.0f;
-    cb.mEyePosW = XMFLOAT3(0.0f, 5.0f, -30.0f);
-
-
-    // Set vertex buffer
-    UINT stride = sizeof(SimpleVertex);
-    UINT offset = 0;
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
-
-    // Set index buffer
-    _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
-
-	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-
-    if (GetKeyState(0x52) & 0x8000 && !_lastInput) {
-        _wireFrameToggle = _wireFrameToggle ? false : true;
-
-        _lastInput = 1000;
-        
-    }
-
-    if (_wireFrameToggle) {
-        _pImmediateContext->RSSetState(_wireFrame);
-    }
-    else {
-        _pImmediateContext->RSSetState(nullptr);
-    }
-
-    //
-    // Renders a triangle
-    //
-
-    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
-	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
-    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
-	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
-	
-
-    // Switch to rendering the Hercules.obj
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_objMeshData.VertexBuffer, &_objMeshData.VBStride, &_objMeshData.VBOffset);
-    _pImmediateContext->IASetIndexBuffer(_objMeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pHerculesTextureRV);
-
-    _pImmediateContext->DrawIndexed(_objMeshData.IndexCount, 0, 0);
-    
-    
-    // Switch to rendering the cube
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
-    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
-
-    world = XMLoadFloat4x4(&_world2);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
-
-    world = XMLoadFloat4x4(&_world3);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
-
-    world = XMLoadFloat4x4(&_world4);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(36, 0, 0);
-
-
-    
-    // Switch to rendering the pyramid
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
-    _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
-
-
-    world = XMLoadFloat4x4(&_world5);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(18, 0, 0);
-
-    world = XMLoadFloat4x4(&_world6);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(18, 0, 0);
-
-    // Switch to rendering the plane.
-    _pImmediateContext->IASetVertexBuffers(0, 1, &_pPlaneVertexBuffer, &stride, &offset);
-    _pImmediateContext->IASetIndexBuffer(_pPlaneIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
-    world = XMLoadFloat4x4(&_world7);
-    cb.mWorld = XMMatrixTranspose(world);
-    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
-    _pImmediateContext->DrawIndexed(96, 0, 0);
-
-
-    //
-    // Present our back buffer to our front buffer
-    //
-    _pSwapChain->Present(0, 0);
-
-    if (_lastInput > 0) {
-        _lastInput--;
-    }
-    else {
-        _lastInput = 0;
-    }
+void Application::Draw() {
+    _graphicManager->Update();
 }
+
+//void Application::Draw()
+//{
+//    //
+//    // Clear the back buffer
+//    //
+//    float ClearColor[4] = {0.05f, 0.05f, 0.05f, 1.0f}; // red,green,blue,alpha
+//    _pImmediateContext->ClearRenderTargetView(_pRenderTargetView, ClearColor);
+//    _pImmediateContext->ClearDepthStencilView(_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+//
+//	XMMATRIX world = XMLoadFloat4x4(&_world);
+//	XMMATRIX view = XMLoadFloat4x4(&_view);
+//	XMMATRIX projection = XMLoadFloat4x4(&_projection);
+//    
+//    //
+//    // Update variables
+//    //
+//    
+//    // TODO: Make a "get time" or make it a global variable.
+//    static float t = 0.0f;
+//
+//    if (_driverType == D3D_DRIVER_TYPE_REFERENCE)
+//    {
+//        t += (float)XM_PI * 0.0125f;
+//    }
+//    else
+//    {
+//        static DWORD dwTimeStart = 0;
+//        DWORD dwTimeCur = GetTickCount64();
+//
+//        if (dwTimeStart == 0)
+//            dwTimeStart = dwTimeCur;
+//
+//        t = (dwTimeCur - dwTimeStart) / 1000.0f;
+//    }
+//
+//    ConstantBuffer cb;
+//	  cb.mWorld = XMMatrixTranspose(world);
+//	  cb.mView = XMMatrixTranspose(view);
+//	  cb.mProjection = XMMatrixTranspose(projection);
+//    cb.mTime = t;
+//
+//    cb.mLightDirection = XMFLOAT3(0.25f, 1.0f, 0.25f);
+//
+//    cb.mDiffuseLight = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+//    cb.mDiffuseMaterial = XMFLOAT4(0.8f, 0.5f, 0.5f, 1.0f);
+//
+//    cb.mAmbientLight = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+//    cb.mAmbientMaterial= XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+//    
+//    cb.mSpecularLight = XMFLOAT4(0.5f, 0.5f, 0.5f, 1.0f);
+//    cb.mSpecularMaterial = XMFLOAT4(0.8f, 0.8f, 0.8f, 1.0f);
+//    cb.mSpecularPower = 10.0f;
+//    cb.mEyePosW = XMFLOAT3(0.0f, 5.0f, -30.0f);
+//
+//
+//    // Set vertex buffer
+//    UINT stride = sizeof(SimpleVertex);
+//    UINT offset = 0;
+//    _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
+//
+//    // Set index buffer
+//    _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+//
+//
+//	_pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//
+//    if (GetKeyState(0x52) & 0x8000 && !_lastInput) {
+//        _wireFrameToggle = _wireFrameToggle ? false : true;
+//
+//        _lastInput = 1000;
+//        
+//    }
+//
+//    if (_wireFrameToggle) {
+//        _pImmediateContext->RSSetState(_wireFrame);
+//    }
+//    else {
+//        _pImmediateContext->RSSetState(nullptr);
+//    }
+//
+//    //
+//    // Renders a triangle
+//    //
+//
+//    _pImmediateContext->VSSetShader(_pVertexShader, nullptr, 0);
+//	_pImmediateContext->VSSetConstantBuffers(0, 1, &_pConstantBuffer);
+//    _pImmediateContext->PSSetConstantBuffers(0, 1, &_pConstantBuffer);
+//	_pImmediateContext->PSSetShader(_pPixelShader, nullptr, 0);
+//	
+//
+//    // Switch to rendering the Hercules.obj
+//    _pImmediateContext->IASetVertexBuffers(0, 1, &_objMeshData.VertexBuffer, &_objMeshData.VBStride, &_objMeshData.VBOffset);
+//    _pImmediateContext->IASetIndexBuffer(_objMeshData.IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+//    _pImmediateContext->PSSetShaderResources(0, 1, &_pHerculesTextureRV);
+//
+//    _pImmediateContext->DrawIndexed(_objMeshData.IndexCount, 0, 0);
+//    
+//    
+//    // Switch to rendering the cube
+//    _pImmediateContext->IASetVertexBuffers(0, 1, &_pVertexBuffer, &stride, &offset);
+//    _pImmediateContext->IASetIndexBuffer(_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+//    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
+//
+//    world = XMLoadFloat4x4(&_world2);
+//    cb.mWorld = XMMatrixTranspose(world);
+//    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//    _pImmediateContext->DrawIndexed(36, 0, 0);
+//
+//    world = XMLoadFloat4x4(&_world3);
+//    cb.mWorld = XMMatrixTranspose(world);
+//    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//    _pImmediateContext->DrawIndexed(36, 0, 0);
+//
+//    world = XMLoadFloat4x4(&_world4);
+//    cb.mWorld = XMMatrixTranspose(world);
+//    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//    _pImmediateContext->DrawIndexed(36, 0, 0);
+//
+//
+//    
+//    // Switch to rendering the pyramid
+//    _pImmediateContext->IASetVertexBuffers(0, 1, &_pPyramidVertexBuffer, &stride, &offset);
+//    _pImmediateContext->IASetIndexBuffer(_pPyramidIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+//    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
+//
+//
+//    world = XMLoadFloat4x4(&_world5);
+//    cb.mWorld = XMMatrixTranspose(world);
+//    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//    _pImmediateContext->DrawIndexed(18, 0, 0);
+//
+//    world = XMLoadFloat4x4(&_world6);
+//    cb.mWorld = XMMatrixTranspose(world);
+//    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//    _pImmediateContext->DrawIndexed(18, 0, 0);
+//
+//    // Switch to rendering the plane.
+//    _pImmediateContext->IASetVertexBuffers(0, 1, &_pPlaneVertexBuffer, &stride, &offset);
+//    _pImmediateContext->IASetIndexBuffer(_pPlaneIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+//
+//    world = XMLoadFloat4x4(&_world7);
+//    cb.mWorld = XMMatrixTranspose(world);
+//    _pImmediateContext->UpdateSubresource(_pConstantBuffer, 0, nullptr, &cb, 0, 0);
+//    _pImmediateContext->DrawIndexed(96, 0, 0);
+//
+//
+//    //
+//    // Present our back buffer to our front buffer
+//    //
+//    _pSwapChain->Present(0, 0);
+//
+//    if (_lastInput > 0) {
+//        _lastInput--;
+//    }
+//    else {
+//        _lastInput = 0;
+//    }
+//}

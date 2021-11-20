@@ -1,5 +1,6 @@
 #pragma once
 #include <d3d11_1.h>
+
 #include "resource.h"
 
 
@@ -13,8 +14,12 @@ private:
 	LPCWSTR		_windowClass;
 
 	RECT		_size = { 0, 0, 1920, 1200 };
-	UINT _height;
-	UINT _width;
+
+	UINT		_height;
+	UINT		_width;
+
+	XMFLOAT4X4	_view;
+	XMFLOAT4X4	_projection;
 
 public:
 	Window(HINSTANCE hInstance, int nCmdShow, LPCWSTR windowName, LPCWSTR windowClass);
@@ -40,5 +45,8 @@ public:
 	HWND GetHWND() { return _hWnd; };
 	UINT GetWidth() { return _width; };
 	UINT GetHeight() { return _height; };
+
+	XMMATRIX GetViewMatrix() { return XMLoadFloat4x4(&_view); };
+	XMMATRIX GetProjectionMatrix() { return XMLoadFloat4x4(&_projection); };
 };
 

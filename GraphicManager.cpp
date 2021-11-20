@@ -1,5 +1,6 @@
 #include "GraphicManager.h"
 
+
 GraphicManager::GraphicManager() {
 	_dxDevice = nullptr;
 	_window = nullptr;
@@ -135,4 +136,47 @@ HRESULT GraphicManager::Initialise(HINSTANCE hInstance, int nCmdShow, LPCWSTR wi
         return hr;
 
     return S_OK;
+}
+
+void GraphicManager::Update() {
+    Draw();
+}
+
+void GraphicManager::Draw() {
+    //
+    // Clear the back buffer
+    //
+    float ClearColor[4] = { 0.05f, 0.05f, 0.05f, 1.0f }; // red,green,blue,alpha
+    _immediateContext->ClearRenderTargetView(_renderTargetView, ClearColor);
+    _immediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    
+
+
+    // TODO: Make a "get time" or make it a global variable.
+    static float t = 0.0f;
+
+
+
+    // TODO: Setup the wireframe system again.
+    //if (GetKeyState(0x52) & 0x8000 && !_lastInput) {
+    //    _wireFrameToggle = _wireFrameToggle ? false : true;
+    //    _lastInput = 1000;
+    //}
+    //if (_wireFrameToggle) {
+    //    _immediateContext->RSSetState(_wireFrame);
+    //} else {
+    //    _immediateContext->RSSetState(nullptr);
+    //}
+
+    //
+    // Present our back buffer to our front buffer
+    //
+    _swapChain->Present(0, 0);
+
+    // TODO: Move this to the input manager.
+    if (_lastInput > 0) {
+        _lastInput--;
+    } else {
+        _lastInput = 0;
+    }
 }
