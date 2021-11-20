@@ -15,3 +15,7 @@ accessing shaders and textures from both managers.
 
 make input manager
 
+So far:
+Objects have somewhat been added, they need a draw() function.
+
+Object manager requires a way to get certain shaders and textures from the other managers.
