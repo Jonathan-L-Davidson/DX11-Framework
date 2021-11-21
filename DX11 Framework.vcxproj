@@ -387,6 +387,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -402,6 +403,7 @@
     <CLInclude Include="resource.h" />
     <ClInclude Include="Structures.h" />
     <ClInclude Include="TextureLoader.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Window.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
   </ItemGroup>

@@ -50,6 +50,10 @@
     <ClInclude Include="GraphicManager.h">
       <Filter>_Headers</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBJLoader.cpp">
@@ -73,6 +77,10 @@
     <ClCompile Include="GraphicManager.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

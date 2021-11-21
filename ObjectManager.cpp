@@ -51,7 +51,7 @@ void Object::Draw(ID3D11DeviceContext* immediateContext, XMMATRIX view, XMMATRIX
 	cb.mSpecularPower = 10.0f;
 	cb.mEyePosW = XMFLOAT3(0.0f, 5.0f, -30.0f);
 
-//	immediateContext->PSSetShaderResources(0, 1, &_texture->GetTexture()); TODO: Setup texture object
+	immediateContext->PSSetShaderResources(0, 1, &_texture->GetTexture());
 	immediateContext->IASetVertexBuffers(0, 1, &_meshData->VertexBuffer, &_meshData->VBStride, &_meshData->VBOffset);
 	immediateContext->IASetIndexBuffer(_meshData->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 

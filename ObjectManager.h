@@ -9,13 +9,13 @@
 #include "TextureLoader.h"
 #include "OBJLoader.h"
 #include "Structures.h"
-
-class Texture {
-	ID3D11ShaderResourceView* _texture
-};
+#include "TextureManager.h"
 
 class Shader {
-
+	ID3D11VertexShader* _pVertexShader;
+	ID3D11PixelShader* _pPixelShader;
+	ID3D11InputLayout* _pVertexLayout;
+	ID3D11SamplerState* _pSamplerLinear;
 };
 
 class Object {

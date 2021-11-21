@@ -19,15 +19,6 @@ private:
 	HINSTANCE               _hInst;
 	GraphicManager*			_graphicManager;
 
-	ID3D11VertexShader*     _pVertexShader;
-	ID3D11PixelShader*      _pPixelShader;
-	ID3D11InputLayout*      _pVertexLayout;
-
-	ID3D11ShaderResourceView* _pCrateTextureRV;
-	ID3D11ShaderResourceView* _pCrateSpecTextureRV;
-	ID3D11ShaderResourceView* _pCrateNormTextureRV;
-	ID3D11ShaderResourceView* _pHerculesTextureRV;
-	ID3D11SamplerState* _pSamplerLinear;
 
 	ID3D11Buffer*           _pVertexBuffer;
 	ID3D11Buffer*           _pIndexBuffer;
