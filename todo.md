@@ -4,10 +4,9 @@ Create an Object Manager.
 
 Create a shader manager
 
-Setup texture object
 create a texture manager
 
-encapsulate camera system
+make camera setpos and whatnot work.
 
 make input manager
 

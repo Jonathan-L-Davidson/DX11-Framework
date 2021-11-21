@@ -21,6 +21,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     return 0;
 }
 
+void Window::UpdateViewMatrix() {
+    XMStoreFloat4x4(&_view, XMMatrixLookAtLH(_camera->Eye, _camera->At, _camera->Up));
+}
+
 HRESULT Window::Initialise() {
     // Register class
     WNDCLASSEX wcex;
@@ -52,6 +56,10 @@ HRESULT Window::Initialise() {
     
     _width = _size.right - _size.left;
     _height = _size.bottom - _size.top;
+
+    // Initialize the projection matrix
+    XMStoreFloat4x4(&_projection, XMMatrixPerspectiveFovLH(XM_PIDIV2, _width / (FLOAT)_height, 0.01f, 100.0f));
+
 
     return S_OK;
 }

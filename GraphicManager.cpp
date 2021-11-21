@@ -139,6 +139,7 @@ HRESULT GraphicManager::Initialise(HINSTANCE hInstance, int nCmdShow, LPCWSTR wi
 }
 
 void GraphicManager::Update() {
+    _window->UpdateViewMatrix();
     Draw();
 }
 

@@ -1,22 +1,14 @@
 #pragma once
 #include <d3d11_1.h>
 #include <d3dcompiler.h>
-#include <directxmath.h>
+#include <DirectXMath.h>
 #include <directxcolors.h>
-#include <stdio.h>
 #include <vector>
-#include "resource.h"
-#include "TextureLoader.h"
 #include "OBJLoader.h"
-#include "Structures.h"
 #include "TextureManager.h"
 
-class Shader {
-	ID3D11VertexShader* _pVertexShader;
-	ID3D11PixelShader* _pPixelShader;
-	ID3D11InputLayout* _pVertexLayout;
-	ID3D11SamplerState* _pSamplerLinear;
-};
+
+
 
 class Object {
 private:
@@ -90,6 +82,6 @@ public:
 	ObjectManager();
 	~ObjectManager();
 
-	AddObject();
+	void AddObject();
 };
 

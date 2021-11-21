@@ -54,6 +54,7 @@
       <Filter>_Headers</Filter>
     </ClInclude>
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBJLoader.cpp">
@@ -81,6 +82,7 @@
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

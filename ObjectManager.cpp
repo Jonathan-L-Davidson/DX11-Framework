@@ -1,4 +1,5 @@
 #include "ObjectManager.h"
+#include "Structures.h"
 
 Object::Object() {
 	_meshData = nullptr;

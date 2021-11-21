@@ -1,8 +1,8 @@
 #pragma once
 #include <d3d11_1.h>
-
+#include <DirectXMath.h>
 #include "resource.h"
-
+#include "Camera.h"
 
 class Window {
 private:
@@ -18,6 +18,8 @@ private:
 	UINT		_height;
 	UINT		_width;
 
+	Camera*		_camera;
+
 	XMFLOAT4X4	_view;
 	XMFLOAT4X4	_projection;
 
@@ -27,6 +29,8 @@ public:
 
 	HRESULT Initialise();
 	void Destroy();
+
+	void UpdateViewMatrix();
 
 	void ShowWind() {
 		ShowWindow(_hWnd, _cmdShow);
@@ -40,13 +44,13 @@ public:
 		GetClientRect(_hWnd, &result);
 
 		return result;
-	}
+	};
 	
 	HWND GetHWND() { return _hWnd; };
 	UINT GetWidth() { return _width; };
 	UINT GetHeight() { return _height; };
 
-	XMMATRIX GetViewMatrix() { return XMLoadFloat4x4(&_view); };
-	XMMATRIX GetProjectionMatrix() { return XMLoadFloat4x4(&_projection); };
+	//XMMATRIX GetViewMatrix() { return XMLoadFloat4x4(&_view); };
+	//XMMATRIX GetProjectionMatrix() { return XMLoadFloat4x4(&_projection); };
 };
 
