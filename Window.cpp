@@ -21,11 +21,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     return 0;
 }
 
+Window::Window(HINSTANCE hInstance, int nCmdShow, LPCWSTR windowName, LPCWSTR windowClass) {
+    _hInst = hInstance;
+    _cmdShow = nCmdShow;
+    _windowName = windowName;
+    _windowClass = windowClass;
+
+    _camera = nullptr;
+}
+
 void Window::UpdateViewMatrix() {
     XMStoreFloat4x4(&_view, XMMatrixLookAtLH(_camera->Eye, _camera->At, _camera->Up));
 }
 
 HRESULT Window::Initialise() {
+    _camera = new Camera();
+
     // Register class
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
@@ -62,4 +73,8 @@ HRESULT Window::Initialise() {
 
 
     return S_OK;
+}
+
+void Window::Destroy() {
+    if (_camera) _camera = nullptr;
 }

@@ -1,6 +1,5 @@
 #include "Application.h"
 
-
 #define WINDOW_NAME L"DX11 Framework"
 #define WINDOW_CLASS L"DX11 Framework"
 
@@ -51,117 +50,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
         return E_FAIL;
 	}
 
-
-
-    //_objMeshData = OBJLoader::Load("Hercules.obj", _pd3dDevice);
-
-	// Initialize the world matrix
-	//XMStoreFloat4x4(&_world, XMMatrixIdentity());
-
-    // Initialize the view matrix
-	//XMVECTOR Eye = XMVectorSet(0.0f, 5.0f, -30.0f, 0.0f);
-	//XMVECTOR At = XMVectorSet(0.0f, -3.0f, 0.0f, 0.0f);
-	//XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
 	return S_OK;
-}
-
-HRESULT Application::InitShadersAndInputLayout()
-{
-	HRESULT hr;
-
-    // Create the sample state
-    D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD = 0;
-    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-    hr = _d3dDevice->CreateSamplerState(&sampDesc, &_pSamplerLinear);
-
-    if (FAILED(hr))
-        return hr;
-
-    _pImmediateContext->PSSetSamplers(0, 1, &_pSamplerLinear);
-
-
-    // Compile the vertex shader
-    ID3DBlob* pVSBlob = nullptr;
-
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "VS", "vs_4_0", &pVSBlob);
-
-
-    if (FAILED(hr))
-    {
-
-        MessageBox(nullptr,
-                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        
-        return hr;
-    }
-
-	// Create the vertex shader
-	hr = _pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_pVertexShader);
-
-	if (FAILED(hr))
-	{	
-		pVSBlob->Release();
-        return hr;
-	}
-
-	// Compile the pixel shader
-	ID3DBlob* pPSBlob = nullptr;
-    hr = CompileShaderFromFile(L"DX11 Framework.fx", "PS", "ps_4_0", &pPSBlob);
-
-    if (FAILED(hr))
-    {
-        MessageBox(nullptr,
-                   L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
-        return hr;
-    }
-
-	// Create the pixel shader
-	hr = _pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pPixelShader);
-	pPSBlob->Release();
-
-    if (FAILED(hr))
-        return hr;
-
-    // Define the input layout
-    D3D11_INPUT_ELEMENT_DESC layout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
-	};
-
-	UINT numElements = ARRAYSIZE(layout);
-
-    // Create the input layout
-	hr = _pd3dDevice->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-                                        pVSBlob->GetBufferSize(), &_pVertexLayout);
-	pVSBlob->Release();
-
-	if (FAILED(hr))
-        return hr;
-
-    // Send the pixel shader the texture data.
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_COLOR.dds", nullptr, &_pCrateTextureRV);
-    _pImmediateContext->PSSetShaderResources(0, 1, &_pCrateTextureRV);
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_SPEC.dds", nullptr, &_pCrateSpecTextureRV);
-    _pImmediateContext->PSSetShaderResources(1, 1, &_pCrateSpecTextureRV);
-    CreateDDSTextureFromFile(_pd3dDevice, L"Crate_NRM.dds", nullptr, &_pCrateNormTextureRV);
-    _pImmediateContext->PSSetShaderResources(2, 1, &_pCrateNormTextureRV);
-    CreateDDSTextureFromFile(_pd3dDevice, L"Hercules_COLOR.dds", nullptr, &_pHerculesTextureRV);
-
-    // Set the input layout
-    _pImmediateContext->IASetInputLayout(_pVertexLayout);
-
-	return hr;
 }
 
 //HRESULT Application::InitVertexBuffer()

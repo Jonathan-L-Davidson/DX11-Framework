@@ -8,6 +8,8 @@
 
 class GraphicManager {
 private:
+	float _clearColor[4] = { 0.05f, 0.05f, 0.05f, 1.0f }; 
+
 	DxDevice* _dxDevice;
 	Window* _window;
 
@@ -22,7 +24,6 @@ private:
 	ID3D11DeviceContext* _immediateContext;	// Pointer gotten from DxDevice
 
 	XMFLOAT4X4 _world;
-
 private:
 	void Draw();
 
@@ -44,6 +45,8 @@ public:
 	ID3D11RasterizerState* GetRasterState() { return _rasterState; };
 	DxDevice* GetDevice() { return _dxDevice; };
 	Window* GetWindow() { return _window; };
+
+	void SetSwapChain(IDXGISwapChain* swapChain) { _swapChain = swapChain; };
 
 };
 

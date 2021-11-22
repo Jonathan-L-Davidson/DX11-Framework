@@ -1,4 +1,5 @@
 #include "GraphicManager.h"
+#include "Structures.h"
 
 
 GraphicManager::GraphicManager() {
@@ -7,7 +8,6 @@ GraphicManager::GraphicManager() {
 	_swapChain = nullptr;
 	_renderTargetView = nullptr;
 	_constantBuffer = nullptr;
-
 }
 
 GraphicManager::~GraphicManager() {
@@ -44,6 +44,8 @@ HRESULT GraphicManager::Initialise(HINSTANCE hInstance, int nCmdShow, LPCWSTR wi
     }
 
     _dxDevice = new DxDevice();
+    _dxDevice->SetManager(this);
+
     if (FAILED(_dxDevice->InitDevice())) {
         Destroy();
 
@@ -59,6 +61,7 @@ HRESULT GraphicManager::Initialise(HINSTANCE hInstance, int nCmdShow, LPCWSTR wi
 
     if (FAILED(hr))
         return hr;
+
 
     hr = _d3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &_renderTargetView);
     pBackBuffer->Release();
@@ -147,8 +150,7 @@ void GraphicManager::Draw() {
     //
     // Clear the back buffer
     //
-    float ClearColor[4] = { 0.05f, 0.05f, 0.05f, 1.0f }; // red,green,blue,alpha
-    _immediateContext->ClearRenderTargetView(_renderTargetView, ClearColor);
+    _immediateContext->ClearRenderTargetView(_renderTargetView, _clearColor);
     _immediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     
 
@@ -175,9 +177,9 @@ void GraphicManager::Draw() {
     _swapChain->Present(0, 0);
 
     // TODO: Move this to the input manager.
-    if (_lastInput > 0) {
-        _lastInput--;
-    } else {
-        _lastInput = 0;
-    }
+    //if (_lastInput > 0) {
+    //    _lastInput--;
+    //} else {
+    //    _lastInput = 0;
+    //}
 }

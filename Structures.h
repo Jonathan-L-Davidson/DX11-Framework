@@ -4,13 +4,15 @@
 #include <d3d11_1.h>
 #include <directxmath.h>
 
+using namespace DirectX;
+
 struct SimpleVertexLegacy {
 	XMFLOAT3 Pos;
 	XMFLOAT2 TexCoord;
 	XMFLOAT3 Normal;
 
-	bool operator<(const SimpleVertex other) const {
-		return memcmp((void*)this, (void*)&other, sizeof(SimpleVertex)) > 0;
+	bool operator<(const SimpleVertexLegacy other) const {
+		return memcmp((void*)this, (void*)&other, sizeof(SimpleVertexLegacy)) > 0;
 	};
 };
 

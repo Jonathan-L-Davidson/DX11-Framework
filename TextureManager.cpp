@@ -19,6 +19,71 @@ void Shader::Destroy() {
 	if (_samplerLinear) _samplerLinear->Release();
 }
 
+HRESULT Shader::Initialise(WCHAR* name, ID3D11Device* device, ID3D11DeviceContext* immediateContext) {
+	HRESULT hr = S_OK;
+
+	// Define the input layout
+	D3D11_INPUT_ELEMENT_DESC layout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+
+	// Compile the vertex shader
+	ID3DBlob* pVSBlob = nullptr;
+
+	hr = CompileShaderFromFile(name, "VS", "vs_4_0", &pVSBlob);
+
+	if (FAILED(hr)) {
+		MessageBox(nullptr,
+			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+		return hr;
+	}
+
+	// Create the vertex shader
+	hr = device->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), nullptr, &_vertexShader);
+
+	if (FAILED(hr))	{
+		pVSBlob->Release();
+		return hr;
+	}
+
+	// Compile the pixel shader
+	ID3DBlob* pPSBlob = nullptr;
+	hr = CompileShaderFromFile(name, "PS", "ps_4_0", &pPSBlob);
+
+	if (FAILED(hr))
+	{
+		MessageBox(nullptr,
+			L"The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", L"Error", MB_OK);
+		return hr;
+	}
+
+	// Create the pixel shader
+	hr = device->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), nullptr, &_pixelShader);
+	pPSBlob->Release();
+
+	if (FAILED(hr)) {
+		pPSBlob->Release();
+		return hr;
+	}
+
+	UINT numElements = ARRAYSIZE(layout);
+
+	// Create the input layout
+	hr = device->CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &_vertexLayout);
+	pVSBlob->Release();
+
+	if (FAILED(hr))
+		return hr;
+
+	// Set the input layout
+	immediateContext->IASetInputLayout(_vertexLayout);
+
+	return hr;
+}
+
+
 HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
 	HRESULT hr = S_OK;
@@ -50,6 +115,31 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
 
 	return S_OK;
 }
+
+
+HRESULT Shader::SetupSampler(ID3D11Device* device, ID3D11DeviceContext* immediateContext) {
+	HRESULT hr;
+
+	// Create the sample state
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	hr = device->CreateSamplerState(&sampDesc, &_samplerLinear);
+
+	if (FAILED(hr))
+		return hr;
+
+	immediateContext->PSSetSamplers(0, 1, &_samplerLinear);
+
+	return S_OK;
+};
+
 /*
 TextureManager::TextureManager(SDL_Renderer* renderer) {
 	m_renderer = renderer;

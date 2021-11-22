@@ -1,8 +1,7 @@
 #pragma once
 #include <d3d11_1.h>
-#include "GraphicManager.h"
 
-
+class GraphicManager;
 
 class DxDevice {
 private:
@@ -19,6 +18,8 @@ public:
 	void Destroy();
 
 	HRESULT InitDevice();
+
+	void SetManager(GraphicManager* manager) { _manager = manager; };
 
 	ID3D11DeviceContext* GetDeviceContext() { return _pImmediateContext; };
 	ID3D11Device* GetDevice() { return _pd3dDevice; };

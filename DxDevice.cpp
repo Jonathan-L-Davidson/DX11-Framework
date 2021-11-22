@@ -1,4 +1,5 @@
 #include "DxDevice.h"
+#include "GraphicManager.h"
 
 DxDevice::DxDevice() {
     _driverType = D3D_DRIVER_TYPE_NULL;
@@ -75,6 +76,8 @@ HRESULT DxDevice::InitDevice() {
         if (SUCCEEDED(hr))
             break;
     }
+
+    _manager->SetSwapChain(swapChain);
 
     if (FAILED(hr))
         return hr;

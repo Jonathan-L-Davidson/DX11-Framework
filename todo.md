@@ -1,28 +1,22 @@
-Finish Graphics manager
+Make Graphic manager draw each object in scene given by the object manager.
 
 Create an Object Manager.
+Make object loader create objects from json file while accessing shaders and textures from both managers.
 
 Create a shader manager
+Create a texture manager
+Make textures load textures from json file
 
-create a texture manager
 
-make camera setpos and whatnot work.
-
-make input manager
-
-make textures load textures from json file
-
-make object loader create objects from json file while
-accessing shaders and textures from both managers.
-
-Make a get time function for graphics manager
-
-setup wireframe system
+Make camera setpos and whatnot work.
+Make input manager
 Move input part of graphics manager to input manager.
+Setup wireframe system
+
+Make a get time functional globally
+
 
 
 
 So far:
-Objects have somewhat been added, they need a draw() function.
-
-Object manager requires a way to get certain shaders and textures from the other managers.
+DX11 refactor done! Now I can work on object management and other asset management controllers.

@@ -53,8 +53,12 @@
     <ClInclude Include="ObjectManager.h">
       <Filter>_Headers</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="TextureManager.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBJLoader.cpp">
@@ -81,8 +85,12 @@
     <ClCompile Include="ObjectManager.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">
