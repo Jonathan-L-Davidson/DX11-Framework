@@ -50,7 +50,7 @@ public:
 	UINT GetWidth() { return _width; };
 	UINT GetHeight() { return _height; };
 
-	//XMMATRIX GetViewMatrix() { return XMLoadFloat4x4(&_view); };
-	//XMMATRIX GetProjectionMatrix() { return XMLoadFloat4x4(&_projection); };
+	XMMATRIX GetViewMatrix() { return XMLoadFloat4x4(&_view); };
+	XMMATRIX GetProjectionMatrix() { return XMLoadFloat4x4(&_projection); };
 };
 

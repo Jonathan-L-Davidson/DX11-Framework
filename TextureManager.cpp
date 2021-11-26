@@ -1,5 +1,9 @@
-#include "TextureManager.h"
 #include <d3dcompiler.h>
+#include <stdio.h>
+#include <string>
+#include "TextureManager.h"
+
+
 
 Shader::Shader() {
 	_vertexShader = nullptr;
@@ -19,7 +23,7 @@ void Shader::Destroy() {
 	if (_samplerLinear) _samplerLinear->Release();
 }
 
-HRESULT Shader::Initialise(WCHAR* name, ID3D11Device* device, ID3D11DeviceContext* immediateContext) {
+HRESULT Shader::Initialise(DWORD* name, ID3D11Device* device, ID3D11DeviceContext* immediateContext) {
 	HRESULT hr = S_OK;
 
 	// Define the input layout
@@ -32,7 +36,7 @@ HRESULT Shader::Initialise(WCHAR* name, ID3D11Device* device, ID3D11DeviceContex
 	// Compile the vertex shader
 	ID3DBlob* pVSBlob = nullptr;
 
-	hr = CompileShaderFromFile(name, "VS", "vs_4_0", &pVSBlob);
+	hr = CompileShaderFromFile((wchar_t*)name, "VS", "vs_4_0", &pVSBlob);
 
 	if (FAILED(hr)) {
 		MessageBox(nullptr,
@@ -50,7 +54,7 @@ HRESULT Shader::Initialise(WCHAR* name, ID3D11Device* device, ID3D11DeviceContex
 
 	// Compile the pixel shader
 	ID3DBlob* pPSBlob = nullptr;
-	hr = CompileShaderFromFile(name, "PS", "ps_4_0", &pPSBlob);
+	hr = CompileShaderFromFile((wchar_t*)name, "PS", "ps_4_0", &pPSBlob);
 
 	if (FAILED(hr))
 	{
@@ -140,59 +144,112 @@ HRESULT Shader::SetupSampler(ID3D11Device* device, ID3D11DeviceContext* immediat
 	return S_OK;
 };
 
-/*
-TextureManager::TextureManager(SDL_Renderer* renderer) {
-	m_renderer = renderer;
-	m_textures = new std::vector<Texture*>;
+Texture::Texture(DWORD id) {
+	_id = id;
+	_textureRSV = nullptr;
+}
+
+Texture::~Texture() {
+	delete _textureRSV;
+}
+
+Texture* Texture::LoadTexture(DWORD FileName, ID3D11Device* device) {
+	CreateDDSTextureFromFile(device, (wchar_t*)FileName, nullptr, &_textureRSV);
+
+	return this;
+}
+
+TextureManager::TextureManager() {
+	_textures = nullptr;
+	_shaders = nullptr;
+
+	_device = nullptr;
+}
+
+void TextureManager::Initialise() {
+	_shaders = new std::vector<Shader*>();
+	_textures = new std::vector<Texture*>();
 }
 
 TextureManager::~TextureManager() {
-	for (int i = 0; i < m_textures->size(); i++) {
-		delete m_textures->at(i);
-	}
-	delete m_textures;
+	_shaders->clear();
+	delete _shaders;
+
+	_textures->clear();
+	delete _textures;
 }
 
-bool TextureManager::CreateTexture(std::string id, std::string cat) {
-	Texture* tex = new Texture(id, cat, m_renderer);
+void TextureManager::CreateTexture(DWORD id, DWORD cat) {
+	Texture* tex = new Texture(id);
+	
+	DWORD fileName = cat + *L"/" + id + *L".dds";
+	tex->LoadTexture(fileName, _device->GetDevice());
+
 	if (tex->GetTexture() == NULL) {
 		delete tex;
-		return false;
+		return;
 	}
-	m_textures->push_back(tex);
-	return true;
+	_textures->push_back(tex);
 }
 
-void TextureManager::RemoveTexture(std::string id) {
-	for (int i = 0; i < m_textures->size(); i++) {
-		if (id == m_textures->at(i)->GetID()) { // If ID is equal to the texture's ID.
-			m_textures->erase(m_textures->begin() + i);
+void TextureManager::RemoveTexture(DWORD id) {
+	for (UINT i = 0; i < _textures->size(); i++) {
+		if (id == _textures->at(i)->GetID()) { // If ID is equal to the texture's ID.
+			_textures->erase(_textures->begin() + i);
 		}
 	}
 }
 
-Texture* TextureManager::GetTexture(std::string id, std::string cat) {
-	std::string null = "";
-
-	//std::cout << "GetTexture(" << id << ", " << cat << ") started." << std::endl;
-
-	Texture* result = new Texture(null, null, m_renderer);
-
-	for (int i = 0; i < m_textures->size(); i++) {
-		if (id == m_textures->at(i)->GetID() && cat == m_textures->at(i)->GetCategory()) { // If ID is equal to the texture's ID.
+Texture* TextureManager::GetTexture(DWORD id) {
+	
+	for (UINT i = 0; i < _textures->size(); i++) {
+		if (id == _textures->at(i)->GetID()) { // If ID is equal to the texture's ID.
 			//std::cout << "GetTexture() passed\n";
-			result = m_textures->at(i);
+			return _textures->at(i);
 		}
 	}
 
-	if (!result->GetID().size()) {
-		std::cout << "Texture not found, creating new texture...\n";
-		if (CreateTexture(id, cat))	result = GetTexture(id, cat);
-	}
-
-	return result;
+	CreateTexture(id, *L"Textures");
+	return GetTexture(id); // Return the 1st texture loaded.
 }
 
-void TextureManager::LoadTextures() {
-
-}*/
+//void TextureManager::CreateShader(WCHAR id, WCHAR cat) {
+//	Shader* shad = new Shader(id);
+//
+//	WCHAR fileName = cat + *L"/" + id + *L".dds";
+//	shad->LoadShader(fileName, _device);
+//
+//	if (shad->GetShader() == NULL) {
+//		delete shad;
+//		return;
+//	}
+//	_textures->push_back(tex);
+//}
+//
+//void TextureManager::RemoveShader(WCHAR id) {
+//	for (int i = 0; i < _shaders->size(); i++) {
+//		if (id == _shaders->at(i)->GetID()) { // If ID is equal to the texture's ID.
+//			_shaders->erase(_shaders->begin() + i);
+//		}
+//	}
+//}
+//
+//Shader* TextureManager::GetShader(WCHAR id) {
+//
+//	std::cout << "GetTexture(" << id << ", " << cat << ") started." << std::endl;
+//
+//	Shader* result;
+//
+//	for (int i = 0; i < _shaders->size(); i++) {
+//		if (id == _shaders->at(i)->GetID()) { // If ID is equal to the texture's ID.
+//			std::cout << "GetTexture() passed\n";
+//			result = _shaders->at(i);
+//		}
+//	}
+//	if (!result || !wcslen((wchar_t*)result->GetID())) { // For some reason, WCHAR is a typedefinition for wchar_t, YET IT'S NOT A WCHAR_T???
+//		result = CreateShader(id);
+//		return _shaders->at(0); // Return the 1st texture loaded.
+//	}
+//
+//	return result;
+//}

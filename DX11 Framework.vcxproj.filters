@@ -41,9 +41,6 @@
     <ClInclude Include="Window.h">
       <Filter>_Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>_Headers</Filter>
-    </ClInclude>
     <ClInclude Include="TextureLoader.h">
       <Filter>Resource Files\TextureLoader</Filter>
     </ClInclude>
@@ -56,7 +53,13 @@
     <ClInclude Include="TextureManager.h">
       <Filter>_Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
       <Filter>_Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -67,16 +70,13 @@
     <ClCompile Include="TextureLoader.cpp">
       <Filter>Resource Files\TextureLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Application.cpp">
+    <ClCompile Include="Window.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="DX11 Framework.cpp">
-      <Filter>_Source</Filter>
-    </ClCompile>
-    <ClCompile Include="DxDevice.cpp">
-      <Filter>_Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="GraphicManager.cpp">
@@ -85,10 +85,16 @@
     <ClCompile Include="ObjectManager.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
+    <ClCompile Include="Application.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DxDevice.cpp">
+      <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
   </ItemGroup>

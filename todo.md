@@ -1,3 +1,6 @@
+REWRITE DWORD ON TEXTUREM ANAGER TO BE APPROPRIATE
+I AM IN AGONY SOMEONE SAVE ME PLEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASE
+
 Make Graphic manager draw each object in scene given by the object manager.
 
 Create an Object Manager.

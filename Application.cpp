@@ -26,14 +26,11 @@
 Application::Application()
 {
 	_hInst = nullptr;
+    _graphicManager = nullptr;
+    _objectManager = nullptr;
+    _textureManager = nullptr;
 
-    _pPyramidVertexBuffer = nullptr;
-    _pPyramidIndexBuffer = nullptr;
-    _pPlaneVertexBuffer = nullptr;
-    _pPlaneIndexBuffer = nullptr;
-
-    _pVertexBuffer = nullptr;
-	_pIndexBuffer = nullptr;
+    _cube = nullptr;
 }
 
 Application::~Application()
@@ -49,6 +46,24 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
         _graphicManager->Destroy();
         return E_FAIL;
 	}
+
+    _textureManager = new TextureManager();
+    _textureManager->SetDevice(_graphicManager->GetDevice());
+    _textureManager->Initialise();
+    
+    _objectManager = new ObjectManager();
+    _objectManager->Initialise();
+
+    _graphicManager->SetObjectManager(_objectManager);
+
+    _cube = new Object();
+    MeshData model = OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice());
+
+    _cube->LoadModel(&model);
+
+    _cube->LoadTexture(_textureManager->GetTexture(*L"Hercules_COLOR"));
+
+    _objectManager->AddObject(_cube);
 
 	return S_OK;
 }
@@ -289,12 +304,12 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
 
 void Application::Cleanup()
 {
-    if (_pVertexBuffer) _pVertexBuffer->Release();
-    if (_pIndexBuffer) _pIndexBuffer->Release();
-    if (_pPyramidVertexBuffer) _pPyramidVertexBuffer->Release();
-    if (_pPyramidIndexBuffer) _pPyramidIndexBuffer->Release();
-    if (_pPlaneVertexBuffer) _pPlaneVertexBuffer->Release();
-    if (_pPlaneIndexBuffer) _pPlaneIndexBuffer->Release();
+    //if (_pVertexBuffer) _pVertexBuffer->Release();
+    //if (_pIndexBuffer) _pIndexBuffer->Release();
+    //if (_pPyramidVertexBuffer) _pPyramidVertexBuffer->Release();
+    //if (_pPyramidIndexBuffer) _pPyramidIndexBuffer->Release();
+    //if (_pPlaneVertexBuffer) _pPlaneVertexBuffer->Release();
+    //if (_pPlaneIndexBuffer) _pPlaneIndexBuffer->Release();
 }
 
 void Application::Update()

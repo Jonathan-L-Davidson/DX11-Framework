@@ -3,6 +3,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include "ObjectManager.h"
 #include "DxDevice.h"
 #include "Window.h"
 
@@ -12,6 +13,8 @@ private:
 
 	DxDevice* _dxDevice;
 	Window* _window;
+
+	ObjectManager* _objManager;
 
 	ID3D11Buffer* _constantBuffer;
 	IDXGISwapChain* _swapChain;
@@ -47,6 +50,6 @@ public:
 	Window* GetWindow() { return _window; };
 
 	void SetSwapChain(IDXGISwapChain* swapChain) { _swapChain = swapChain; };
-
+	void SetObjectManager(ObjectManager* manager) { _objManager = manager; };
 };
 

@@ -3,11 +3,21 @@
 
 
 GraphicManager::GraphicManager() {
+    _d3dDevice = nullptr;
 	_dxDevice = nullptr;
 	_window = nullptr;
+
+    _objManager = nullptr;
+
 	_swapChain = nullptr;
 	_renderTargetView = nullptr;
 	_constantBuffer = nullptr;
+
+    _depthStencilBuffer = nullptr;
+    _depthStencilView = nullptr;
+    _immediateContext = nullptr;
+    _rasterState = nullptr;
+
 }
 
 GraphicManager::~GraphicManager() {
@@ -29,8 +39,8 @@ void GraphicManager::Destroy() {
     if (_renderTargetView) _renderTargetView->Release();
     if (_rasterState) _rasterState->Release();
 
-    _d3dDevice = nullptr;
     _immediateContext = nullptr;
+    _d3dDevice = nullptr;
 }
 
 
@@ -152,11 +162,15 @@ void GraphicManager::Draw() {
     //
     _immediateContext->ClearRenderTargetView(_renderTargetView, _clearColor);
     _immediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-    
+    static float t = 0.0f;
 
+    std::vector<Object*>* objs = _objManager->GetObjects();
+    
+    for (int i = 0; i < objs->size(); i++) {
+        objs->at(i)->Draw(_immediateContext, _window->GetViewMatrix(), _window->GetProjectionMatrix(), t);
+    }
 
     // TODO: Make a "get time" or make it a global variable.
-    static float t = 0.0f;
 
 
 
