@@ -9,19 +9,19 @@ using namespace DirectX;
 
 class Texture {
 private:
-	DWORD _id;
+	LPCWSTR _id;
 	ID3D11ShaderResourceView* _textureRSV;
 
 public:
 	
-	Texture(DWORD id);
+	Texture(LPCWSTR id);
 	~Texture();
 
 
-	Texture* LoadTexture(DWORD FileName, ID3D11Device* device);
+	Texture* LoadTexture(LPCWSTR FileName, ID3D11Device* device);
 
 	Texture* GetTexture() { return this; };
-	DWORD GetID() { return _id; };
+	LPCWSTR GetID() { return _id; };
 	ID3D11ShaderResourceView* GetRSV() { return _textureRSV; };
 };
 
@@ -40,8 +40,8 @@ public:
 
 	void Destroy();
 
-	HRESULT Initialise(DWORD* name, ID3D11Device* device, ID3D11DeviceContext* immediateContext);
-	HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
+	HRESULT Initialise(LPCWSTR name, ID3D11Device* device, ID3D11DeviceContext* immediateContext);
+	HRESULT CompileShaderFromFile(LPCWSTR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
 
 	void SetShader(ID3D11DeviceContext* immediateContext);
@@ -59,14 +59,14 @@ public:
 	~TextureManager();
 	void Initialise();
 
-	void CreateTexture(DWORD id, DWORD cat);
-	void RemoveTexture(DWORD id);
-	Texture* GetTexture(DWORD id);
-	ID3D11ShaderResourceView* GetTextureRSV(DWORD id) { return GetTexture(id)->GetRSV(); };
+	void CreateTexture(LPCWSTR id, LPCWSTR cat);
+	void RemoveTexture(LPCWSTR id);
+	Texture* GetTexture(LPCWSTR id);
+	ID3D11ShaderResourceView* GetTextureRSV(LPCWSTR id) { return GetTexture(id)->GetRSV(); };
 
-	void CreateShader(DWORD id, DWORD cat);
-	void RemoveShader(DWORD id);
-	Shader* GetShader(DWORD id);
+	void CreateShader(LPCWSTR id, LPCWSTR cat);
+	void RemoveShader(LPCWSTR id);
+	Shader* GetShader(LPCWSTR id);
 
 	void SetDevice(DxDevice* device) { _device = device; };
 };

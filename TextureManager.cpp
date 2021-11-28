@@ -23,7 +23,7 @@ void Shader::Destroy() {
 	if (_samplerLinear) _samplerLinear->Release();
 }
 
-HRESULT Shader::Initialise(DWORD* name, ID3D11Device* device, ID3D11DeviceContext* immediateContext) {
+HRESULT Shader::Initialise(LPCWSTR name, ID3D11Device* device, ID3D11DeviceContext* immediateContext) {
 	HRESULT hr = S_OK;
 
 	// Define the input layout
@@ -35,8 +35,9 @@ HRESULT Shader::Initialise(DWORD* name, ID3D11Device* device, ID3D11DeviceContex
 
 	// Compile the vertex shader
 	ID3DBlob* pVSBlob = nullptr;
+	LPCWSTR* fileName = new LPCWSTR(name);
 
-	hr = CompileShaderFromFile((wchar_t*)name, "VS", "vs_4_0", &pVSBlob);
+	hr = CompileShaderFromFile(fileName, "VS", "vs_4_0", &pVSBlob);
 
 	if (FAILED(hr)) {
 		MessageBox(nullptr,
@@ -54,7 +55,7 @@ HRESULT Shader::Initialise(DWORD* name, ID3D11Device* device, ID3D11DeviceContex
 
 	// Compile the pixel shader
 	ID3DBlob* pPSBlob = nullptr;
-	hr = CompileShaderFromFile((wchar_t*)name, "PS", "ps_4_0", &pPSBlob);
+	hr = CompileShaderFromFile(fileName, "PS", "ps_4_0", &pPSBlob);
 
 	if (FAILED(hr))
 	{
@@ -84,11 +85,12 @@ HRESULT Shader::Initialise(DWORD* name, ID3D11Device* device, ID3D11DeviceContex
 	// Set the input layout
 	immediateContext->IASetInputLayout(_vertexLayout);
 
+	delete fileName;
 	return hr;
 }
 
 
-HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+HRESULT Shader::CompileShaderFromFile(LPCWSTR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
 	HRESULT hr = S_OK;
 
@@ -102,7 +104,7 @@ HRESULT Shader::CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LP
 #endif
 
 	ID3DBlob* pErrorBlob;
-	hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
+	hr = D3DCompileFromFile(*szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
 		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
 
 	if (FAILED(hr))
@@ -144,7 +146,7 @@ HRESULT Shader::SetupSampler(ID3D11Device* device, ID3D11DeviceContext* immediat
 	return S_OK;
 };
 
-Texture::Texture(DWORD id) {
+Texture::Texture(LPCWSTR id) {
 	_id = id;
 	_textureRSV = nullptr;
 }
@@ -153,8 +155,8 @@ Texture::~Texture() {
 	delete _textureRSV;
 }
 
-Texture* Texture::LoadTexture(DWORD FileName, ID3D11Device* device) {
-	CreateDDSTextureFromFile(device, (wchar_t*)FileName, nullptr, &_textureRSV);
+Texture* Texture::LoadTexture(LPCWSTR FileName, ID3D11Device* device) {
+	CreateDDSTextureFromFile(device, FileName, nullptr, &_textureRSV);
 
 	return this;
 }
@@ -179,11 +181,13 @@ TextureManager::~TextureManager() {
 	delete _textures;
 }
 
-void TextureManager::CreateTexture(DWORD id, DWORD cat) {
+void TextureManager::CreateTexture(LPCWSTR id, LPCWSTR cat) {
 	Texture* tex = new Texture(id);
 	
-	DWORD fileName = cat + *L"/" + id + *L".dds";
-	tex->LoadTexture(fileName, _device->GetDevice());
+	std::wstring extension = L".dds";
+	std::wstring fileName = (std::wstring)id + extension;
+	
+	tex->LoadTexture(fileName.c_str(), _device->GetDevice());
 
 	if (tex->GetTexture() == NULL) {
 		delete tex;
@@ -192,7 +196,7 @@ void TextureManager::CreateTexture(DWORD id, DWORD cat) {
 	_textures->push_back(tex);
 }
 
-void TextureManager::RemoveTexture(DWORD id) {
+void TextureManager::RemoveTexture(LPCWSTR id) {
 	for (UINT i = 0; i < _textures->size(); i++) {
 		if (id == _textures->at(i)->GetID()) { // If ID is equal to the texture's ID.
 			_textures->erase(_textures->begin() + i);
@@ -200,7 +204,7 @@ void TextureManager::RemoveTexture(DWORD id) {
 	}
 }
 
-Texture* TextureManager::GetTexture(DWORD id) {
+Texture* TextureManager::GetTexture(LPCWSTR id) {
 	
 	for (UINT i = 0; i < _textures->size(); i++) {
 		if (id == _textures->at(i)->GetID()) { // If ID is equal to the texture's ID.
@@ -209,14 +213,16 @@ Texture* TextureManager::GetTexture(DWORD id) {
 		}
 	}
 
-	CreateTexture(id, *L"Textures");
+	LPCWSTR Category = L"Textures";
+
+	CreateTexture(id, Category);
 	return GetTexture(id); // Return the 1st texture loaded.
 }
 
-//void TextureManager::CreateShader(WCHAR id, WCHAR cat) {
+//void TextureManager::CreateShader(LPCWSTR id, LPCWSTR cat) {
 //	Shader* shad = new Shader(id);
 //
-//	WCHAR fileName = cat + *L"/" + id + *L".dds";
+//	LPCWSTR fileName = cat + *L"/" + id + *L".dds";
 //	shad->LoadShader(fileName, _device);
 //
 //	if (shad->GetShader() == NULL) {
@@ -226,7 +232,7 @@ Texture* TextureManager::GetTexture(DWORD id) {
 //	_textures->push_back(tex);
 //}
 //
-//void TextureManager::RemoveShader(WCHAR id) {
+//void TextureManager::RemoveShader(LPCWSTR id) {
 //	for (int i = 0; i < _shaders->size(); i++) {
 //		if (id == _shaders->at(i)->GetID()) { // If ID is equal to the texture's ID.
 //			_shaders->erase(_shaders->begin() + i);
@@ -234,7 +240,7 @@ Texture* TextureManager::GetTexture(DWORD id) {
 //	}
 //}
 //
-//Shader* TextureManager::GetShader(WCHAR id) {
+//Shader* TextureManager::GetShader(LPCWSTR id) {
 //
 //	std::cout << "GetTexture(" << id << ", " << cat << ") started." << std::endl;
 //
@@ -246,7 +252,7 @@ Texture* TextureManager::GetTexture(DWORD id) {
 //			result = _shaders->at(i);
 //		}
 //	}
-//	if (!result || !wcslen((wchar_t*)result->GetID())) { // For some reason, WCHAR is a typedefinition for wchar_t, YET IT'S NOT A WCHAR_T???
+//	if (!result || !wcslen((LPCWSTR_t*)result->GetID())) { // For some reason, LPCWSTR is a typedefinition for LPCWSTR_t, YET IT'S NOT A LPCWSTR_T???
 //		result = CreateShader(id);
 //		return _shaders->at(0); // Return the 1st texture loaded.
 //	}

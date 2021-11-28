@@ -57,11 +57,11 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
     _graphicManager->SetObjectManager(_objectManager);
 
     _cube = new Object();
-    MeshData model = OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice());
+    MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
 
-    _cube->LoadModel(&model);
-
-    _cube->LoadTexture(_textureManager->GetTexture(*L"Hercules_COLOR"));
+    _cube->LoadModel(model);
+    LPCWSTR colorTexture = L"Hercules_COLOR";
+    _cube->LoadTexture(_textureManager->GetTexture(colorTexture));
 
     _objectManager->AddObject(_cube);
 
