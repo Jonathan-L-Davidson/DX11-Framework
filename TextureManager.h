@@ -23,6 +23,7 @@ public:
 	Texture* GetTexture() { return this; };
 	LPCWSTR GetID() { return _id; };
 	ID3D11ShaderResourceView* GetRSV() { return _textureRSV; };
+	ID3D11ShaderResourceView& GetRSVRef() { return *_textureRSV; };
 };
 
 class Shader {

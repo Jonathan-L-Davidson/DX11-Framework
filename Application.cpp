@@ -60,8 +60,10 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
     MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
 
     _cube->LoadModel(model);
-    LPCWSTR colorTexture = L"Hercules_COLOR";
-    _cube->LoadTexture(_textureManager->GetTexture(colorTexture));
+    //LPCWSTR colorTexture = L"Hercules_COLOR";
+    //_cube->LoadTexture(_textureManager->GetTexture(colorTexture));
+    Texture* texture = new Texture(L"Pain");
+    _cube->LoadTexture(texture->LoadTexture(L"Hercules_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
 
     _objectManager->AddObject(_cube);
 
