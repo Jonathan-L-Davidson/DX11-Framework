@@ -1,7 +1,15 @@
 #include "Object.h"
 #include "Structures.h"
 
+using namespace DirectX;
+
 Object::Object() {
+	XMStoreFloat4x4(&_world, XMMatrixIdentity());
+	XMStoreFloat4x4(&_position, XMMatrixIdentity());
+	XMStoreFloat4x4(&_rotation, XMMatrixIdentity());
+	XMStoreFloat4x4(&_scale, XMMatrixIdentity());
+
+	_id = 0;
 	_meshData = nullptr;
 	_shader = nullptr;
 	_texture = nullptr;
@@ -35,8 +43,10 @@ void Object::Update() {
 	return;
 }
 
-void Object::Draw(ID3D11DeviceContext* immediateContext, XMMATRIX view, XMMATRIX projection, float t) {
-	XMMATRIX world = GetWorld();
+void Object::Draw(ID3D11DeviceContext* immediateContext, ID3D11Buffer* constantBuffer, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectionMatrix, float t) {
+	XMMATRIX world = XMLoadFloat4x4(&GetWorld());
+	XMMATRIX view = XMLoadFloat4x4(&viewMatrix);
+	XMMATRIX projection = XMLoadFloat4x4(&projectionMatrix);
 
 	ConstantBuffer cb;
 	cb.mWorld = XMMatrixTranspose(world);
@@ -58,6 +68,13 @@ void Object::Draw(ID3D11DeviceContext* immediateContext, XMMATRIX view, XMMATRIX
 	cb.mEyePosW = XMFLOAT3(0.0f, 5.0f, -30.0f);
 
 	ID3D11ShaderResourceView* texRSV = _texture->GetRSV(); 
+	ID3D11SamplerState* sampleState = _shader->GetSS();
+	immediateContext->VSSetShader(_shader->GetVS(), nullptr, 0);
+	immediateContext->VSSetConstantBuffers(0, 1, &constantBuffer);
+	immediateContext->PSSetConstantBuffers(0, 1, &constantBuffer);
+	immediateContext->PSSetShader(_shader->GetPS(), nullptr, 0);
+	immediateContext->PSSetSamplers(0, 1, &sampleState);
+
 
 	immediateContext->PSSetShaderResources(0, 1, &texRSV);
 	immediateContext->IASetVertexBuffers(0, 1, &_meshData->VertexBuffer, &_meshData->VBStride, &_meshData->VBOffset);
@@ -69,10 +86,10 @@ void Object::Draw(ID3D11DeviceContext* immediateContext, XMMATRIX view, XMMATRIX
 void Object::UpdateWorldCoords() {
 	// TODO: find an alternative way to set world coordinates for the object
 
-	XMMATRIX scale = GetScale();
-	XMMATRIX rotation = GetRotation();
-	XMMATRIX position = GetPos();
-	XMMATRIX world = GetWorld();
+	XMMATRIX scale = XMLoadFloat4x4(&GetScale());
+	XMMATRIX rotation = XMLoadFloat4x4(&GetRotation());
+	XMMATRIX position = XMLoadFloat4x4(&GetPos());
+	XMMATRIX world = XMLoadFloat4x4(&GetWorld());
 
 	XMStoreFloat4x4(&_world, scale * position * rotation * world); // Apply local values before multiplying it into the world coordinates.
 

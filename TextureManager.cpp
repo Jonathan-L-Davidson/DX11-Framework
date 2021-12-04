@@ -158,7 +158,7 @@ Texture::~Texture() {
 Texture* Texture::LoadTexture(LPCWSTR FileName, ID3D11Device* device) {
 	HRESULT result;
 	result = CreateDDSTextureFromFile(device, FileName, nullptr, &_textureRSV);
-	if (result) {
+	if (FAILED(result)) {
 		throw;
 	}
 	return this;
@@ -188,7 +188,8 @@ void TextureManager::CreateTexture(LPCWSTR id, LPCWSTR cat) {
 	Texture* tex = new Texture(id);
 	
 	std::wstring extension = L".dds";
-	std::wstring fileName = (std::wstring)id + extension;
+	std::wstring slash = L"/";
+	std::wstring fileName = (std::wstring)cat + slash + (std::wstring)id + extension;
 	
 	tex = tex->LoadTexture(fileName.c_str(), _device->GetDevice());
 

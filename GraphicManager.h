@@ -9,7 +9,7 @@
 
 class GraphicManager {
 private:
-	float _clearColor[4] = { 0.05f, 0.05f, 0.05f, 1.0f }; 
+	float _clearColor[4] = { 0.15f, 0.05f, 0.05f, 1.0f }; 
 
 	DxDevice* _dxDevice;
 	Window* _window;

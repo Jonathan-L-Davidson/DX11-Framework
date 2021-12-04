@@ -44,6 +44,10 @@ public:
 	HRESULT Initialise(LPCWSTR name, ID3D11Device* device, ID3D11DeviceContext* immediateContext);
 	HRESULT CompileShaderFromFile(LPCWSTR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut);
 
+	ID3D11VertexShader* GetVS() { return _vertexShader; };
+	ID3D11PixelShader* GetPS() { return _pixelShader; };
+	ID3D11InputLayout* GetVL() { return _vertexLayout; };
+	ID3D11SamplerState* GetSS() { return _samplerLinear; };
 
 	void SetShader(ID3D11DeviceContext* immediateContext);
 };

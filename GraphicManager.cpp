@@ -1,6 +1,7 @@
 #include "GraphicManager.h"
 #include "Structures.h"
 
+using namespace DirectX;
 
 GraphicManager::GraphicManager() {
     _d3dDevice = nullptr;
@@ -46,6 +47,8 @@ void GraphicManager::Destroy() {
 
 HRESULT GraphicManager::Initialise(HINSTANCE hInstance, int nCmdShow, LPCWSTR windowName, LPCWSTR windowClass) {
     HRESULT hr = S_OK;
+
+    XMStoreFloat4x4(&_world, XMMatrixIdentity());
 
     _window = new Window(hInstance, nCmdShow, windowName, windowClass);
 
@@ -167,7 +170,7 @@ void GraphicManager::Draw() {
     std::vector<Object*>* objs = _objManager->GetObjects();
     
     for (int i = 0; i < objs->size(); i++) {
-        objs->at(i)->Draw(_immediateContext, _window->GetViewMatrix(), _window->GetProjectionMatrix(), t);
+        objs->at(i)->Draw(_immediateContext, _constantBuffer, _window->GetViewMatrix(), _window->GetProjectionMatrix(), t);
     }
 
     // TODO: Make a "get time" or make it a global variable.

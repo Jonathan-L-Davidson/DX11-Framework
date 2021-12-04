@@ -16,6 +16,8 @@ public:
 
 	void Initialise();
 
+	void Update();
+
 	std::vector<Object*>* GetObjects() { return _objects; };
 
 	void AddObject(Object* obj) { _objects->push_back(obj); obj->SetID(_objects->size()); };
