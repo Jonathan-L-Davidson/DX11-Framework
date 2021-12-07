@@ -28,6 +28,12 @@ Window::Window(HINSTANCE hInstance, int nCmdShow, LPCWSTR windowName, LPCWSTR wi
     _windowName = windowName;
     _windowClass = windowClass;
 
+    _width = 0; _height = 0;
+    _hWnd = nullptr;
+
+    XMStoreFloat4x4(&_view, XMMatrixIdentity());
+    XMStoreFloat4x4(&_projection, XMMatrixIdentity());
+
     _camera = nullptr;
 }
 
@@ -78,4 +84,5 @@ HRESULT Window::Initialise() {
 
 void Window::Destroy() {
     if (_camera) _camera = nullptr;
+
 }

@@ -7,6 +7,7 @@ ObjectManager::ObjectManager() {
 
 void ObjectManager::Initialise() {
 	_objects = new std::vector<Object*>();
+
 }
 
 

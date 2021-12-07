@@ -3,6 +3,7 @@
 #define WINDOW_NAME L"DX11 Framework"
 #define WINDOW_CLASS L"DX11 Framework"
 
+
 // New datatypes/procs I need to learn:
 // HDC - Handler for Device Context
 // PAINTSTRUCT - contains app info to "paint" the client area?? - NEED MORE INFO
@@ -56,17 +57,18 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
 
     _graphicManager->SetObjectManager(_objectManager);
 
-    _cube = new Object();
+    _cube = new SpinningObject();
     MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
 
     _cube->LoadModel(model);
-    //LPCWSTR colorTexture = L"Hercules_COLOR";
-    //_cube->LoadTexture(_textureManager->GetTexture(colorTexture));
+
     Texture* texture = new Texture(L"Pain");
     _cube->LoadTexture(texture->LoadTexture(L"Hercules_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
+
     Shader* shader = new Shader();
     shader->Initialise(L"DX11 Framework.fx", _graphicManager->GetDevice()->GetDevice(), _graphicManager->GetDevice()->GetDeviceContext());
     _cube->LoadShader(shader);
+
     _objectManager->AddObject(_cube);
 
 	return S_OK;
@@ -74,21 +76,16 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
 
 
 void Application::Cleanup() {
-    //if (_pVertexBuffer) _pVertexBuffer->Release();
-    //if (_pIndexBuffer) _pIndexBuffer->Release();
-    //if (_pPyramidVertexBuffer) _pPyramidVertexBuffer->Release();
-    //if (_pPyramidIndexBuffer) _pPyramidIndexBuffer->Release();
-    //if (_pPlaneVertexBuffer) _pPlaneVertexBuffer->Release();
-    //if (_pPlaneIndexBuffer) _pPlaneIndexBuffer->Release();
+    if (_graphicManager) delete _graphicManager;
+    if (_textureManager) delete _textureManager;
+    if (_objectManager) delete _objectManager;
+    if (_cube) delete _cube;
 }
 
 void Application::Update() {
     _objectManager->Update();
 
-    // Update our time
-    static float t = 0.0f;
-
-    t += (float) XM_PI * 0.0125f;
+//    time += (float) XM_PI * 0.0125f;
 
  //   //
  //   // Animate the cube

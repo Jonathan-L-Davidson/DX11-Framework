@@ -1,14 +1,12 @@
 #include "Application.h"
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
-{
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
 	Application * theApp = new Application();
 
-	if (FAILED(theApp->Initialise(hInstance, nCmdShow)))
-	{
+	if (FAILED(theApp->Initialise(hInstance, nCmdShow))) {
 		return -1;
 	}
 

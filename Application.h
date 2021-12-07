@@ -11,6 +11,7 @@
 #include "GraphicManager.h"
 #include "TextureManager.h"
 #include "ObjectManager.h"
+#include "SpinningObject.h"
 
 using namespace DirectX;
 
@@ -22,7 +23,7 @@ private:
 	TextureManager*			_textureManager;
 	ObjectManager*			_objectManager;
 
-	Object*					_cube;
+	SpinningObject*					_cube;
 
 private:
 	void Cleanup();

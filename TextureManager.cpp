@@ -85,13 +85,14 @@ HRESULT Shader::Initialise(LPCWSTR name, ID3D11Device* device, ID3D11DeviceConte
 	// Set the input layout
 	immediateContext->IASetInputLayout(_vertexLayout);
 
+	SetupSampler(device, immediateContext);
+
 	delete fileName;
 	return hr;
 }
 
 
-HRESULT Shader::CompileShaderFromFile(LPCWSTR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
-{
+HRESULT Shader::CompileShaderFromFile(LPCWSTR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut) {
 	HRESULT hr = S_OK;
 
 	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -107,8 +108,7 @@ HRESULT Shader::CompileShaderFromFile(LPCWSTR* szFileName, LPCSTR szEntryPoint, 
 	hr = D3DCompileFromFile(*szFileName, nullptr, nullptr, szEntryPoint, szShaderModel,
 		dwShaderFlags, 0, ppBlobOut, &pErrorBlob);
 
-	if (FAILED(hr))
-	{
+	if (FAILED(hr)) {
 		if (pErrorBlob != nullptr)
 			OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
 
@@ -152,7 +152,7 @@ Texture::Texture(LPCWSTR id) {
 }
 
 Texture::~Texture() {
-	delete _textureRSV;
+	_textureRSV->Release();
 }
 
 Texture* Texture::LoadTexture(LPCWSTR FileName, ID3D11Device* device) {
@@ -177,6 +177,8 @@ void TextureManager::Initialise() {
 }
 
 TextureManager::~TextureManager() {
+	_device = nullptr;
+
 	_shaders->clear();
 	delete _shaders;
 

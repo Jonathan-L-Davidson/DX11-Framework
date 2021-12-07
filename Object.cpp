@@ -69,6 +69,7 @@ void Object::Draw(ID3D11DeviceContext* immediateContext, ID3D11Buffer* constantB
 
 	ID3D11ShaderResourceView* texRSV = _texture->GetRSV(); 
 	ID3D11SamplerState* sampleState = _shader->GetSS();
+	
 	immediateContext->VSSetShader(_shader->GetVS(), nullptr, 0);
 	immediateContext->VSSetConstantBuffers(0, 1, &constantBuffer);
 	immediateContext->PSSetConstantBuffers(0, 1, &constantBuffer);
@@ -79,6 +80,8 @@ void Object::Draw(ID3D11DeviceContext* immediateContext, ID3D11Buffer* constantB
 	immediateContext->PSSetShaderResources(0, 1, &texRSV);
 	immediateContext->IASetVertexBuffers(0, 1, &_meshData->VertexBuffer, &_meshData->VBStride, &_meshData->VBOffset);
 	immediateContext->IASetIndexBuffer(_meshData->IndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+
+	immediateContext->UpdateSubresource(constantBuffer, 0, nullptr, &cb, 0, 0);
 
 	immediateContext->DrawIndexed(_meshData->IndexCount, 0, 0);
 }

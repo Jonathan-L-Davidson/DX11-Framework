@@ -19,6 +19,8 @@ GraphicManager::GraphicManager() {
     _immediateContext = nullptr;
     _rasterState = nullptr;
 
+    XMStoreFloat4x4(&_world, XMMatrixIdentity());
+
 }
 
 GraphicManager::~GraphicManager() {
