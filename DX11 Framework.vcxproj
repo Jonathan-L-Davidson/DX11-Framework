@@ -378,6 +378,7 @@
     <ClCompile Include="SpinningObject.cpp" />
     <ClCompile Include="TextureLoader.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Time.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -397,6 +398,7 @@
     <ClInclude Include="Structures.h" />
     <ClInclude Include="TextureLoader.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="Window.h" />
     <ResourceCompile Include="DX11 Framework.rc" />
     <Folder Include="source\" />

@@ -26,7 +26,7 @@ public:
 	void LoadTexture(Texture* texture);
 	void LoadShader(Shader* shader);
 
-	virtual void Update();
+	virtual void Update(double dt);
 	void Draw(ID3D11DeviceContext* immediateContext, ID3D11Buffer* constantBuffer, XMFLOAT4X4 view, XMFLOAT4X4 projection, float t);
 
 	void UpdateWorldCoords();

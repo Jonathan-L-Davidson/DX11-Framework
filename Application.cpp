@@ -24,8 +24,8 @@
 //  
 //
 
-Application::Application()
-{
+Application::Application() {
+    _time = nullptr;
 	_hInst = nullptr;
     _graphicManager = nullptr;
     _objectManager = nullptr;
@@ -34,12 +34,13 @@ Application::Application()
     _cube = nullptr;
 }
 
-Application::~Application()
-{
+Application::~Application() {
 	Cleanup();
 }
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
+    _time = new Time();
+
 
     _graphicManager = new GraphicManager();
     
@@ -54,6 +55,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
     
     _objectManager = new ObjectManager();
     _objectManager->Initialise();
+
+    _objectManager->SetTime(_time);
 
     _graphicManager->SetObjectManager(_objectManager);
 
@@ -80,16 +83,16 @@ void Application::Cleanup() {
     if (_textureManager) delete _textureManager;
     if (_objectManager) delete _objectManager;
     if (_cube) delete _cube;
+    if (_time) delete _time;
 }
 
 void Application::Update() {
+    _time->StartFrame();
+    _time->UpdateFPS();
     _objectManager->Update();
 
-//    time += (float) XM_PI * 0.0125f;
+    _time->EndFrame();
 
- //   //
- //   // Animate the cube
- //   //
 	//XMStoreFloat4x4(&_world, XMMatrixScaling(2.5f, 2.5f, 2.5f) * XMMatrixRotationY(t * 0.2f));
 
 	//XMStoreFloat4x4(&_world2, XMMatrixScaling(1.4f, 1.4f, 1.4f) * XMMatrixRotationZ(t)

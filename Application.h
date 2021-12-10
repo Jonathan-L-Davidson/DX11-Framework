@@ -12,6 +12,7 @@
 #include "TextureManager.h"
 #include "ObjectManager.h"
 #include "SpinningObject.h"
+#include "Time.h"
 
 using namespace DirectX;
 
@@ -22,6 +23,7 @@ private:
 	GraphicManager*			_graphicManager;
 	TextureManager*			_textureManager;
 	ObjectManager*			_objectManager;
+	Time*					_time;
 
 	SpinningObject*					_cube;
 

@@ -5,6 +5,6 @@ public:
 	SpinningObject();
 	~SpinningObject();
 
-	void Update();
+	void Update(double dt);
 };
 

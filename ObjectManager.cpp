@@ -3,6 +3,7 @@
 
 ObjectManager::ObjectManager() {
 	_objects = nullptr;
+	_time = nullptr;
 }
 
 void ObjectManager::Initialise() {
@@ -13,7 +14,7 @@ void ObjectManager::Initialise() {
 
 void ObjectManager::Update() {
 	for (int i = 0; i < _objects->size(); i++) {
-		_objects->at(i)->Update();
+		_objects->at(i)->Update(_time->GetDelta());
 	}
 }
 

@@ -37,7 +37,7 @@ void Object::LoadShader(Shader* shader) {
 	_shader = shader;
 }
 
-void Object::Update() {
+void Object::Update(double dt) {
 
 	UpdateWorldCoords();
 	return;

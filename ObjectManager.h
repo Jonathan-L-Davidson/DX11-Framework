@@ -5,11 +5,12 @@
 #include <directxcolors.h>
 #include <vector>
 #include "Object.h"
+#include "Time.h"
 
 class ObjectManager {
 private:
 	std::vector<Object*>* _objects;
-
+	Time* _time;
 public:
 	ObjectManager();
 	~ObjectManager();
@@ -21,5 +22,6 @@ public:
 	std::vector<Object*>* GetObjects() { return _objects; };
 
 	void AddObject(Object* obj) { _objects->push_back(obj); obj->SetID(_objects->size()); };
+	void SetTime(Time* time) { _time = time; };
 };
 
