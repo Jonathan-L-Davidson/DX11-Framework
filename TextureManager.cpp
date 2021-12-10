@@ -188,8 +188,9 @@ void TextureManager::CreateTexture(LPCWSTR id, LPCWSTR cat) {
 	Texture* tex = new Texture(id);
 	
 	std::wstring extension = L".dds";
-	std::wstring slash = L"/";
-	std::wstring fileName = (std::wstring)cat + slash + (std::wstring)id + extension;
+	std::wstring fileName = (std::wstring)id + extension;
+//	std::wstring fileName = (std::wstring)cat + slash + (std::wstring)id + extension; // Leaving this commented for now.
+
 	
 	tex = tex->LoadTexture(fileName.c_str(), _device->GetDevice());
 
