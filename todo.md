@@ -1,25 +1,26 @@
-Fix objects not rendering.
-
-Cleanup destructors and make sure all pointers are cleaned up.
-
-Create subtypes of objects with custom Update() calls to make them s p e e n.
 
 Make object loader create objects from json file while accessing shaders and textures from both managers.
-Make textures load textures from json file
+Make object loader create objects from json file while accessing shaders and textures from both managers.
+Create a shader manager
+Create a texture manager
+Make input manager
+Move input part of graphics manager to input manager.
 
-Make camera setpos and whatnot work.
 
 Make input manager
 Move input part of graphics manager to input manager.
 Setup wireframe system
 
-Make a get time functional globally
-
-!MAYBE! Create a light object..?
-!MAYBE! Make light object s p e e n
+Catch up with tutorials
 
 
-So far:
-DX11 refactor done!...ish. Now I can work on object management and other asset management controllers.
+
+DX11 refactor done! Now I can work on object management and other asset management controllers.
 Doesn't crash when game is loaded.
-Memory leaks fixed.
+Set Shader to work with object.
+Make Graphic manager draw each object in scene given by the object manager.
+Create an Object Manager.
+Create a shader manager
+Create a texture manager
+DX11 refactor done! Now I can work on object management and other asset management controllers.
+Doesn't crash when game is loaded.

@@ -9,12 +9,12 @@ public:
 	XMVECTOR Eye;
 	XMVECTOR At;
 	XMVECTOR Up;
-	
+
 	Camera();
 	~Camera();
 
-	void SetEye(XMVECTOR);
-	void SetPos(XMVECTOR);
-	void SetUp(XMVECTOR);
+	void SetEye(XMVECTOR val) { Eye = val; };
+	void SetPos(XMVECTOR val) { At  = val; };
+	void SetUp (XMVECTOR val) { Up  = val; };
 };
 

@@ -3,7 +3,6 @@
 #include "OBJLoader.h"
 #include "TextureManager.h"
 
-
 class Object {
 private:
 	UINT _id;
@@ -27,7 +26,7 @@ public:
 	void LoadTexture(Texture* texture);
 	void LoadShader(Shader* shader);
 
-	void Update();
+	virtual void Update();
 	void Draw(ID3D11DeviceContext* immediateContext, ID3D11Buffer* constantBuffer, XMFLOAT4X4 view, XMFLOAT4X4 projection, float t);
 
 	void UpdateWorldCoords();
@@ -37,7 +36,8 @@ public:
 	// Position helpers!
 	///
 	void AddPos(XMVECTOR pos) {
-		XMMATRIX bufferPos = XMLoadFloat4x4(&GetPos()); // Make an old copy of the current position.
+		XMFLOAT4X4 fPos = GetPos();
+		XMMATRIX bufferPos = XMLoadFloat4x4(&fPos); // Make an old copy of the current position.
 		XMStoreFloat4x4(&_position, XMMatrixTranslationFromVector(pos) * bufferPos); // Multiply the old matrice ontop of the old one..?
 		// TO DO, check if this works!
 	};
@@ -49,7 +49,8 @@ public:
 	// Rotation Helpers!
 	///
 	void AddRotation(XMVECTOR rotation) {
-		XMMATRIX bufferRot = XMLoadFloat4x4(&GetRotation());
+		XMFLOAT4X4 fRot = GetRotation();
+		XMMATRIX bufferRot = XMLoadFloat4x4(&fRot);
 		XMStoreFloat4x4(&_rotation, XMMatrixRotationRollPitchYawFromVector(rotation) * bufferRot);
 	};
 
@@ -60,7 +61,8 @@ public:
 	// Scale Helpers!
 	///
 	void AddScale(XMVECTOR scale) {
-		XMMATRIX bufferScale = XMLoadFloat4x4(&GetScale());
+		XMFLOAT4X4 fScale = GetScale();
+		XMMATRIX bufferScale = XMLoadFloat4x4(&fScale);
 		XMStoreFloat4x4(&_scale, XMMatrixScalingFromVector(scale) * bufferScale);
 	};
 

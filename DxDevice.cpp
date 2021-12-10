@@ -2,6 +2,7 @@
 #include "GraphicManager.h"
 
 DxDevice::DxDevice() {
+    _manager = nullptr;
     _driverType = D3D_DRIVER_TYPE_NULL;
     _featureLevel = D3D_FEATURE_LEVEL_11_0;
     _pd3dDevice = nullptr;
@@ -13,9 +14,11 @@ DxDevice::~DxDevice() {
 }
 
 void DxDevice::Destroy(){
+    _manager = nullptr;
+
+    if (_pd3dDevice) _pd3dDevice->Release();
     if (_pImmediateContext) _pImmediateContext->ClearState();
     if (_pImmediateContext) _pImmediateContext->Release();
-    if (_pd3dDevice) _pd3dDevice->Release();
 }
 
 
