@@ -27,6 +27,9 @@
     <Filter Include="_Source">
       <UniqueIdentifier>{6c554004-185b-4433-bab8-023807355316}</UniqueIdentifier>
     </Filter>
+    <Filter Include="_Source\Objects">
+      <UniqueIdentifier>{14c46b28-77a8-4baf-b4ca-6d701a2b87ac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OBJLoader.h">
@@ -62,14 +65,17 @@
     <ClInclude Include="Object.h">
       <Filter>_Headers</Filter>
     </ClInclude>
-    <ClInclude Include="SpinningObject.h">
-      <Filter>_Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Time.h">
       <Filter>_Headers</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SpinningObject.h">
+      <Filter>_Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="HardcodedObjects.h">
+      <Filter>_Source\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -106,14 +112,17 @@
     <ClCompile Include="Object.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
-    <ClCompile Include="SpinningObject.cpp">
-      <Filter>_Source</Filter>
-    </ClCompile>
     <ClCompile Include="Time.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinningObject.cpp">
+      <Filter>_Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="HardcodedObjects.cpp">
+      <Filter>_Source\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

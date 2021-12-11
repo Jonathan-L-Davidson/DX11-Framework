@@ -11,6 +11,7 @@
 #include "GraphicManager.h"
 #include "TextureManager.h"
 #include "ObjectManager.h"
+#include "InputManager.h"
 #include "SpinningObject.h"
 #include "Time.h"
 
@@ -23,6 +24,7 @@ private:
 	GraphicManager*			_graphicManager;
 	TextureManager*			_textureManager;
 	ObjectManager*			_objectManager;
+	InputManager*			_inputManager;
 	Time*					_time;
 
 	SpinningObject*					_cube;

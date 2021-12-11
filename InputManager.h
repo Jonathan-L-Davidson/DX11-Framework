@@ -1,19 +1,20 @@
 #pragma once
-#include <winuser.h>
 #include <d3d11.h>
-#include "Window.h"
+#include "Time.h"
 
 class InputManager {
 private:
-	int _lastInput = 0;
-	int _delay = 100;
+	Time* _time;
+	float _lastInput = 0;
+	int _delay = 1;
 	
 public:
 	InputManager();
 	~InputManager();
+	void SetTime(Time* time) { _time = time; };
 	void Update();
 
-	bool GetKeyDown(int key);
-	bool GetKeyUp(int key);
+	bool GetKeyDown(const char key);
+	bool GetKeyUp(const char key);
 };
 

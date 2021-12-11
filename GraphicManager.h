@@ -7,16 +7,19 @@
 #include "DxDevice.h"
 #include "Window.h"
 #include "Time.h"
+#include "InputManager.h"
 
 class GraphicManager {
 private:
 	float _clearColor[4] = { 0.15f, 0.05f, 0.05f, 1.0f }; 
+	bool _wireFrameToggle = 0;
 
 	DxDevice* _dxDevice;
 	Window* _window;
 	Time* _time;
 
 	ObjectManager* _objManager;
+	InputManager* _input;
 
 	ID3D11Buffer* _constantBuffer;
 	IDXGISwapChain* _swapChain;
@@ -53,6 +56,7 @@ public:
 
 	void SetSwapChain(IDXGISwapChain* swapChain) { _swapChain = swapChain; };
 	void SetObjectManager(ObjectManager* manager) { _objManager = manager; };
+	void SetInputManager(InputManager* manager) { _input = manager; };
 	void SetTime(Time* time) { _time = time; };
 };
 

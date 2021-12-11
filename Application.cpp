@@ -40,7 +40,8 @@ Application::~Application() {
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
     _time = new Time();
-
+    _inputManager = new InputManager();
+    _inputManager->SetTime(_time);
 
     _graphicManager = new GraphicManager();
     
@@ -60,6 +61,8 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
 
     _graphicManager->SetObjectManager(_objectManager);
     _graphicManager->SetTime(_time);
+    _graphicManager->SetInputManager(_inputManager);
+
     _cube = new SpinningObject();
     MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
 
@@ -89,6 +92,7 @@ void Application::Cleanup() {
 void Application::Update() {
     _time->StartFrame();
     _time->UpdateFPS();
+    _inputManager->Update();
     _objectManager->Update();
 
     _time->EndFrame();

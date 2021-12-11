@@ -179,16 +179,15 @@ void GraphicManager::Draw() {
 
 
 
-    // TODO: Setup the wireframe system again.
-    //if (GetKeyState(0x52) & 0x8000 && !_lastInput) {
-    //    _wireFrameToggle = _wireFrameToggle ? false : true;
-    //    _lastInput = 1000;
-    //}
-    //if (_wireFrameToggle) {
-    //    _immediateContext->RSSetState(_wireFrame);
-    //} else {
-    //    _immediateContext->RSSetState(nullptr);
-    //}
+    if (_input->GetKeyUp('R')) {
+        _wireFrameToggle = _wireFrameToggle ? false : true;
+    }
+
+    if (_wireFrameToggle) {
+        _immediateContext->RSSetState(_rasterState);
+    } else {
+        _immediateContext->RSSetState(nullptr);
+    }
 
     //
     // Present our back buffer to our front buffer

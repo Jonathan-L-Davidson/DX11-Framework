@@ -52,7 +52,5 @@ public:
 
 	XMFLOAT4X4 GetViewMatrix() { return _view; };
 	XMFLOAT4X4 GetProjectionMatrix() { return _projection; };
-
-	//bool GetFocus() { if(_hWnd == GetFocus(); };
 };
 

@@ -1,9 +1,12 @@
+Add hardcoded cube and pyramids back in
+Add in dynamic plane generation
+
+Create Scene
+
 Make object loader create objects from json file while accessing shaders and textures from both managers.
 
 Make textures load textures from json file
 
-Make input manager
-Move input part of graphics manager to input manager.
 
 Make camera setpos and whatnot work.
 
@@ -16,12 +19,6 @@ Top-down view
 static view
 
 Make JSON load camera positions based off JSON file.
-
-Add in dynamic plane generation
-
-Add hardcoded cube and pyramids back in?
-
-Setup wireframe system
 
 Catch up with tutorials
 
@@ -42,3 +39,30 @@ Create an Object Manager.
 Create a shader manager
 Create a texture manager
 Make a get time functional globally
+Make input manager
+Move input part of graphics manager to input manager.
+Setup wireframe system
+
+
+
+Notes:
+
+    SimpleVertex vertices[] =
+    {
+        { XMFLOAT3( -1.0f, 1.0f, 1.0f ),    XMFLOAT3(-0.816497f,0.408248f, 0.408248),       XMFLOAT4( 1.0f, 0.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3( 1.0f, 1.0f, 1.0f ),     XMFLOAT3(0.816497f, 0.408248f, 0.408248f),      XMFLOAT4( 0.0f, 1.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3( -1.0f, -1.0f, 1.0f ),   XMFLOAT3(-0.666667f, -0.666667f, 0.333333f),    XMFLOAT4( 0.0f, 0.0f, 1.0f, 1.0f ) },
+        { XMFLOAT3( 1.0f, -1.0f, 1.0f ),    XMFLOAT3(0.408248f, -0.408248f, 0.816497f),     XMFLOAT4( 1.0f, 1.0f, 1.0f, 1.0f ) },
+        { XMFLOAT3( 1.0f, -1.0f, -1.0f ),   XMFLOAT3(0.666667f, -0.666667f, -0.333333f),    XMFLOAT4( 1.0f, 1.0f, 0.0f, 1.0f ) },
+        { XMFLOAT3( -1.0f, -1.0f, -1.0f ),  XMFLOAT3(-0.408248f, -0.408248f,-0.816497f),    XMFLOAT4( 0.0f, 1.0f, 1.0f, 1.0f ) },
+        { XMFLOAT3( 1.0f, 1.0f, -1.0f ),    XMFLOAT3(0.333333f, 0.666667f, -0.666667f),     XMFLOAT4( 1.0f, 0.0f, 1.0f, 1.0f ) },
+        { XMFLOAT3( -1.0f, 1.0f, -1.0f ),   XMFLOAT3(-0.816497f, 0.408248f, -0.408248f),    XMFLOAT4( 0.5f, 0.5f, 0.5f, 1.0f ) },
+    };
+
+    SimpleVertex pyramidVertices[] = {
+        { XMFLOAT3(1.0f, 0.0f,-1.0f),       XMFLOAT3(0.333333f,0.333333f,-0.666667f),       XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
+        { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT3(0.816497f,0.333333f,0.408248f),        XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
+        { XMFLOAT3(-1.0f, 0.0f, 1.0f),      XMFLOAT3(-0.333333f,0.333333f,0.666667f),       XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
+        { XMFLOAT3(-1.0f, 0.0f,-1.0f),      XMFLOAT3(-0.408248f,0.333333f,-0.816497f),      XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f)},
+        { XMFLOAT3(0.0f, 1.0f, 0.0f),       XMFLOAT3(0.0f,1.0f,0.0f),                       XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f)},
+    };

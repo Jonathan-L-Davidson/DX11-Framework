@@ -3,7 +3,6 @@
 
 class Time {
 private:
-	std::chrono::time_point<std::chrono::steady_clock> _timeMaster;
 	std::chrono::time_point<std::chrono::steady_clock> _timeFPS;
 
 	std::chrono::time_point<std::chrono::steady_clock> _timeNow;
