@@ -372,6 +372,7 @@
     <ClCompile Include="DX11 Framework.cpp" />
     <ClCompile Include="DxDevice.cpp" />
     <ClCompile Include="GraphicManager.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="OBJLoader.cpp" />
@@ -390,6 +391,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DxDevice.h" />
     <ClInclude Include="GraphicManager.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="OBJLoader.h" />

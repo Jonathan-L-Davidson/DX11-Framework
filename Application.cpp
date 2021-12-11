@@ -59,7 +59,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
     _objectManager->SetTime(_time);
 
     _graphicManager->SetObjectManager(_objectManager);
-
+    _graphicManager->SetTime(_time);
     _cube = new SpinningObject();
     MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
 

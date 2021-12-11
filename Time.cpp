@@ -30,6 +30,12 @@ void Time::EndFrame() {
 	_deltaTime = _timeNow - _timeOld;
 }
 
+double Time::GetTime() {
+	_time = std::chrono::duration<double, std::milli>(_timeNow.time_since_epoch());
+
+	return _time.count();
+}
+
 double Time::GetDelta() {
 	return _deltaTime.count();
 }

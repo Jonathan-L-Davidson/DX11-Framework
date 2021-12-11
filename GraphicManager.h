@@ -6,6 +6,7 @@
 #include "ObjectManager.h"
 #include "DxDevice.h"
 #include "Window.h"
+#include "Time.h"
 
 class GraphicManager {
 private:
@@ -13,6 +14,7 @@ private:
 
 	DxDevice* _dxDevice;
 	Window* _window;
+	Time* _time;
 
 	ObjectManager* _objManager;
 
@@ -51,5 +53,6 @@ public:
 
 	void SetSwapChain(IDXGISwapChain* swapChain) { _swapChain = swapChain; };
 	void SetObjectManager(ObjectManager* manager) { _objManager = manager; };
+	void SetTime(Time* time) { _time = time; };
 };
 

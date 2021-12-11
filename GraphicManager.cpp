@@ -35,6 +35,8 @@ void GraphicManager::Destroy() {
     if (_window) _window->Destroy();
     _window = nullptr;
 
+    _time = nullptr;
+
     if (_constantBuffer) _constantBuffer->Release();
     if (_swapChain) _swapChain->Release();
     if (_depthStencilView) _depthStencilView->Release();
@@ -167,15 +169,13 @@ void GraphicManager::Draw() {
     //
     _immediateContext->ClearRenderTargetView(_renderTargetView, _clearColor);
     _immediateContext->ClearDepthStencilView(_depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-    static float t = 0.0f;
 
     std::vector<Object*>* objs = _objManager->GetObjects();
     
     for (int i = 0; i < objs->size(); i++) {
-        objs->at(i)->Draw(_immediateContext, _constantBuffer, _window->GetViewMatrix(), _window->GetProjectionMatrix(), t);
+        objs->at(i)->Draw(_immediateContext, _constantBuffer, _window->GetViewMatrix(), _window->GetProjectionMatrix(), _time->GetTime());
     }
 
-    // TODO: Make a "get time" or make it a global variable.
 
 
 
