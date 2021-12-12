@@ -2,7 +2,7 @@
 #include "Object.h"
 
 class Cube : Object {
-	Cube();
+	Cube(DxDevice* device);
 	~Cube();
 
 	void Update(double dt);
@@ -11,7 +11,7 @@ class Cube : Object {
 
 
 class Pyramid : Object {
-	Pyramid();
+	Pyramid(DxDevice* device);
 	~Pyramid();
 
 	void Update(double dt);
