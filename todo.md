@@ -1,14 +1,3 @@
-remove hardcodedobjects.h
-
-Add in dynamic plane generation
-
-Create Scene
-
-Make object loader create objects from json file while accessing shaders and textures from both managers.
-
-Make textures load textures from json file
-
-
 Make camera setpos and whatnot work.
 
 Make player controlled object move and rotate based on keys entered.
@@ -18,6 +7,16 @@ FPS camera
 TPS camera
 Top-down view
 static view
+
+
+Add in dynamic plane generation
+
+
+Make object loader create objects from json file while accessing shaders and textures from both managers.
+
+Make textures load textures from json file
+
+
 
 Make JSON load camera positions based off JSON file.
 
@@ -44,4 +43,5 @@ Make input manager
 Move input part of graphics manager to input manager.
 Setup wireframe system
 Add hardcoded cube and pyramids back in --- I'm bout to give up on this hardcoded blocks. It's just one mark. No. stop.
+remove hardcodedobjects.h
 

@@ -62,9 +62,6 @@
     <ClInclude Include="Camera.h">
       <Filter>_Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>_Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Time.h">
       <Filter>_Headers</Filter>
     </ClInclude>
@@ -72,6 +69,12 @@
       <Filter>_Headers</Filter>
     </ClInclude>
     <ClInclude Include="SpinningObject.h">
+      <Filter>_Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerObject.h">
+      <Filter>_Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
       <Filter>_Source\Objects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -106,9 +109,6 @@
     <ClCompile Include="DxDevice.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>_Source</Filter>
-    </ClCompile>
     <ClCompile Include="Time.cpp">
       <Filter>_Source</Filter>
     </ClCompile>
@@ -116,6 +116,12 @@
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="SpinningObject.cpp">
+      <Filter>_Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerObject.cpp">
+      <Filter>_Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
       <Filter>_Source\Objects</Filter>
     </ClCompile>
   </ItemGroup>
