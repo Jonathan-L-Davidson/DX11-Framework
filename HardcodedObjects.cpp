@@ -1,6 +1,6 @@
 #include "HardcodedObjects.h"
 
-Cube::Cube(DxDevice* device) {
+Cube::Cube(XMFLOAT3 pos, DxDevice* device) {
     SimpleVertex vertices[] =
     {
         { XMFLOAT3(-1.0f, 1.0f, 1.0f),    XMFLOAT3(-0.816497f,0.408248f, 0.408248),       XMFLOAT2(0.0f, 0.0f), },
@@ -58,12 +58,16 @@ Cube::Cube(DxDevice* device) {
     mesh->IndexCount = 36;
 
     LoadModel(mesh);
+
+
+    XMVECTOR vPos = XMLoadFloat3(&pos);
+    SetPos(vPos);
 }
 
 Cube::~Cube() {
 }
 
-Pyramid::Pyramid(DxDevice* device) {
+Pyramid::Pyramid(XMFLOAT3 pos, DxDevice* device) {
     SimpleVertex pyramidVertices[] = {
     { XMFLOAT3(1.0f, 0.0f,-1.0f),       XMFLOAT3(0.333333f,0.333333f,-0.666667f),       XMFLOAT2(1.0f, 1.0f), },
     { XMFLOAT3(1.0f, 0.0f, 1.0f),       XMFLOAT3(0.816497f,0.333333f,0.408248f),        XMFLOAT2(0.0f, 1.0f), },
@@ -110,6 +114,10 @@ Pyramid::Pyramid(DxDevice* device) {
     mesh->IndexCount = 18;
 
     LoadModel(mesh);
+
+
+    XMVECTOR vPos = XMLoadFloat3(&pos);
+    SetPos(vPos);
 }
 
 Pyramid::~Pyramid() {

@@ -1,7 +1,8 @@
 #include "SpinningObject.h"
 
-SpinningObject::SpinningObject() {
-
+SpinningObject::SpinningObject(XMFLOAT3 pos) {
+	XMVECTOR vPos = XMLoadFloat3(&pos);
+	SetPos(vPos);
 }
 
 SpinningObject::~SpinningObject() {

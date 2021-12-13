@@ -13,6 +13,7 @@
 #include "ObjectManager.h"
 #include "InputManager.h"
 #include "SpinningObject.h"
+#include "HardcodedObjects.h"
 #include "Time.h"
 
 using namespace DirectX;
@@ -27,7 +28,12 @@ private:
 	InputManager*			_inputManager;
 	Time*					_time;
 
-	SpinningObject*					_cube;
+	SpinningObject*			_spinningObject;
+	Pyramid*				_pyramid;
+	Cube*					_cube;
+
+	HRESULT SetupManagers(HINSTANCE hInstance, int nCmdShow);
+	void SetupObjects();
 
 private:
 	void Cleanup();

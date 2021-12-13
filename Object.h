@@ -10,21 +10,19 @@ private:
 	XMFLOAT4X4	_position;
 	XMFLOAT4X4	_rotation;
 	XMFLOAT4X4	_scale;
-	MeshData* _meshData;
-	Shader* _shader;
-	Texture* _texture;
+	static MeshData* _meshData;
+	static Shader* _shader;
+	static Texture* _texture;
 
 	XMFLOAT4X4	_world;
-public:
-
 public:
 	Object();
 	~Object();
 
-	void Destroy();
-	void LoadModel(MeshData* mesh);
-	void LoadTexture(Texture* texture);
-	void LoadShader(Shader* shader);
+	static void Destroy();
+	static void LoadModel(MeshData* mesh);
+	static void LoadTexture(Texture* texture);
+	static void LoadShader(Shader* shader);
 
 	virtual void Update(double dt);
 	void Draw(ID3D11DeviceContext* immediateContext, ID3D11Buffer* constantBuffer, XMFLOAT4X4 view, XMFLOAT4X4 projection, float t);
@@ -40,6 +38,7 @@ public:
 		XMMATRIX bufferPos = XMLoadFloat4x4(&fPos); // Make an old copy of the current position.
 		XMStoreFloat4x4(&_position, XMMatrixTranslationFromVector(pos) * bufferPos); // Multiply the old matrice ontop of the old one..?
 		// TO DO, check if this works!
+		// It works!!
 	};
 
 	void SetPos(XMVECTOR pos) { XMStoreFloat4x4(&_position, XMMatrixTranslationFromVector(pos)); };

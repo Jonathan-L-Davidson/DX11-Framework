@@ -31,7 +31,7 @@ Application::Application() {
     _objectManager = nullptr;
     _textureManager = nullptr;
 
-    _cube = nullptr;
+    _spinningObject = nullptr;
 }
 
 Application::~Application() {
@@ -39,43 +39,11 @@ Application::~Application() {
 }
 
 HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow) {
-    _time = new Time();
-    _inputManager = new InputManager();
-    _inputManager->SetTime(_time);
-
-    _graphicManager = new GraphicManager();
-    
-    if (FAILED(_graphicManager->Initialise(hInstance, nCmdShow, WINDOW_NAME, WINDOW_CLASS))) {
-        _graphicManager->Destroy();
+    if (FAILED(SetupManagers(hInstance, nCmdShow))) {
         return E_FAIL;
-	}
+    }
 
-    _textureManager = new TextureManager();
-    _textureManager->SetDevice(_graphicManager->GetDevice());
-    _textureManager->Initialise();
-    
-    _objectManager = new ObjectManager();
-    _objectManager->Initialise();
-
-    _objectManager->SetTime(_time);
-
-    _graphicManager->SetObjectManager(_objectManager);
-    _graphicManager->SetTime(_time);
-    _graphicManager->SetInputManager(_inputManager);
-
-    _cube = new SpinningObject();
-    MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
-
-    _cube->LoadModel(model);
-
-    Texture* texture = new Texture(L"Pain");
-    _cube->LoadTexture(texture->LoadTexture(L"Hercules_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
-
-    Shader* shader = new Shader();
-    shader->Initialise(L"DX11 Framework.fx", _graphicManager->GetDevice()->GetDevice(), _graphicManager->GetDevice()->GetDeviceContext());
-    _cube->LoadShader(shader);
-
-    _objectManager->AddObject(_cube);
+    SetupObjects();
 
 	return S_OK;
 }
@@ -85,7 +53,7 @@ void Application::Cleanup() {
     if (_graphicManager) delete _graphicManager;
     if (_textureManager) delete _textureManager;
     if (_objectManager) delete _objectManager;
-    if (_cube) delete _cube;
+    if (_spinningObject) delete _spinningObject;
     if (_time) delete _time;
 }
 
@@ -120,6 +88,65 @@ void Application::Draw() {
     _graphicManager->Update();
 }
 
+HRESULT Application::SetupManagers(HINSTANCE hInstance, int nCmdShow) {
+    _time = new Time();
+    _inputManager = new InputManager();
+    _inputManager->SetTime(_time);
+
+    _graphicManager = new GraphicManager();
+
+    if (FAILED(_graphicManager->Initialise(hInstance, nCmdShow, WINDOW_NAME, WINDOW_CLASS))) {
+        _graphicManager->Destroy();
+        return E_FAIL;
+    }
+
+    _textureManager = new TextureManager();
+    _textureManager->SetDevice(_graphicManager->GetDevice());
+    _textureManager->Initialise();
+
+    _objectManager = new ObjectManager();
+    _objectManager->Initialise();
+
+    _objectManager->SetTime(_time);
+
+    _graphicManager->SetObjectManager(_objectManager);
+    _graphicManager->SetTime(_time);
+    _graphicManager->SetInputManager(_inputManager);
+
+    return S_OK;
+}
+
+void Application::SetupObjects() {
+    MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
+
+    _spinningObject = new SpinningObject(XMFLOAT3(1, 0, 1));
+
+    _spinningObject->LoadModel(model);
+
+    Texture* texture = new Texture(L"Pain");
+    _spinningObject->LoadTexture(texture->LoadTexture(L"Hercules_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
+
+    Shader* shader = new Shader();
+    shader->Initialise(L"DX11 Framework.fx", _graphicManager->GetDevice()->GetDevice(), _graphicManager->GetDevice()->GetDeviceContext());
+    _spinningObject->LoadShader(shader);
+
+    _pyramid = new Pyramid(XMFLOAT3(5, 0, 3), _graphicManager->GetDevice());
+    _cube = new Cube(XMFLOAT3(5, 0, 3), _graphicManager->GetDevice());
+
+    Texture* textureCrate = new Texture(L"Crate");
+    textureCrate->LoadTexture(L"Crate_COLOR.dds", _graphicManager->GetDevice()->GetDevice());
+    
+    _pyramid->LoadTexture(textureCrate->GetTexture());
+    _pyramid->LoadShader(shader);
+
+    _cube->LoadTexture(textureCrate->GetTexture());
+    _cube->LoadShader(shader);
+
+
+    _objectManager->AddObject(_spinningObject);
+    _objectManager->AddObject(_pyramid);
+    _objectManager->AddObject(_cube);
+}
 //void Application::Draw()
 //{
 //    //

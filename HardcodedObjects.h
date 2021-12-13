@@ -1,20 +1,18 @@
 #pragma once
-#include "Object.h"
+#include "SpinningObject.h"
 
-class Cube : Object {
-	Cube(DxDevice* device);
+class Cube : public SpinningObject {
+public:
+	Cube(XMFLOAT3 pos, DxDevice* device) : SpinningObject(pos) {};
 	~Cube();
-
-	void Update(double dt);
 
 };
 
 
-class Pyramid : Object {
-	Pyramid(DxDevice* device);
+class Pyramid : public SpinningObject {
+public:
+	Pyramid(XMFLOAT3 pos, DxDevice* device) : SpinningObject(pos) {};
 	~Pyramid();
-
-	void Update(double dt);
 
 };
 
