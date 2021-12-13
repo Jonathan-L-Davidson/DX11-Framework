@@ -119,7 +119,7 @@ HRESULT Application::SetupManagers(HINSTANCE hInstance, int nCmdShow) {
 void Application::SetupObjects() {
     MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
 
-    _spinningObject = new SpinningObject(XMFLOAT3(1, 0, 1));
+    _spinningObject = new SpinningObject(XMFLOAT3(8, 0, 5));
 
     _spinningObject->LoadModel(model);
 
@@ -130,22 +130,7 @@ void Application::SetupObjects() {
     shader->Initialise(L"DX11 Framework.fx", _graphicManager->GetDevice()->GetDevice(), _graphicManager->GetDevice()->GetDeviceContext());
     _spinningObject->LoadShader(shader);
 
-    _pyramid = new Pyramid(XMFLOAT3(5, 0, 3), _graphicManager->GetDevice());
-    _cube = new Cube(XMFLOAT3(5, 0, 3), _graphicManager->GetDevice());
-
-    Texture* textureCrate = new Texture(L"Crate");
-    textureCrate->LoadTexture(L"Crate_COLOR.dds", _graphicManager->GetDevice()->GetDevice());
-    
-    _pyramid->LoadTexture(textureCrate->GetTexture());
-    _pyramid->LoadShader(shader);
-
-    _cube->LoadTexture(textureCrate->GetTexture());
-    _cube->LoadShader(shader);
-
-
     _objectManager->AddObject(_spinningObject);
-    _objectManager->AddObject(_pyramid);
-    _objectManager->AddObject(_cube);
 }
 //void Application::Draw()
 //{

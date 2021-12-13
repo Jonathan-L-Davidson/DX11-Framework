@@ -12,8 +12,8 @@
 #include "TextureManager.h"
 #include "ObjectManager.h"
 #include "InputManager.h"
+#include "Object.h"
 #include "SpinningObject.h"
-#include "HardcodedObjects.h"
 #include "Time.h"
 
 using namespace DirectX;
@@ -29,8 +29,6 @@ private:
 	Time*					_time;
 
 	SpinningObject*			_spinningObject;
-	Pyramid*				_pyramid;
-	Cube*					_cube;
 
 	HRESULT SetupManagers(HINSTANCE hInstance, int nCmdShow);
 	void SetupObjects();

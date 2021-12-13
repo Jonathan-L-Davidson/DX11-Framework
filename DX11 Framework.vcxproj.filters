@@ -74,9 +74,6 @@
     <ClInclude Include="SpinningObject.h">
       <Filter>_Source\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="HardcodedObjects.h">
-      <Filter>_Source\Objects</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="OBJLoader.cpp">
@@ -119,9 +116,6 @@
       <Filter>_Source</Filter>
     </ClCompile>
     <ClCompile Include="SpinningObject.cpp">
-      <Filter>_Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="HardcodedObjects.cpp">
       <Filter>_Source\Objects</Filter>
     </ClCompile>
   </ItemGroup>
