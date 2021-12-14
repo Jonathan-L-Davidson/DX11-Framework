@@ -43,6 +43,7 @@ public:
 
 	void SetPos(XMFLOAT3 pos) { XMStoreFloat4x4(&_position, XMMatrixTranslation(pos.x, pos.y, pos.z)); };
 	XMFLOAT4X4 GetPos() { return _position; };
+	XMVECTOR GetPosVect() { XMFLOAT3 fl3 = XMFLOAT3(_position._11, _position._21, _position._31); return XMLoadFloat3(&fl3); };
 	///
 	// Rotation Helpers!
 	///

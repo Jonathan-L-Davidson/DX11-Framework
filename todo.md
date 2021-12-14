@@ -1,6 +1,7 @@
 Make camera setpos and whatnot work.
 
 Make player controlled object move and rotate based on keys entered.
+Add play input loop
 
 Have 4 cameras:
 FPS camera
@@ -10,7 +11,6 @@ static view
 
 
 Add in dynamic plane generation
-
 
 Make object loader create objects from json file while accessing shaders and textures from both managers.
 
