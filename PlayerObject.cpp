@@ -21,8 +21,8 @@ PlayerObject::~PlayerObject() {
 }
 
 void PlayerObject::Initialise() {
-	_cameraOffsetFPS = XMFLOAT3(0, 3, 0);
-	_cameraOffsetTPS = XMFLOAT3(0, 6, 6);
+	_cameraOffsetFPS = XMFLOAT3(0, 0.5f, 0);
+	_cameraOffsetTPS = XMFLOAT3(0, 0.5f, 6);
 	
 	_staticCamera = _window->GetCamera();
 	
@@ -58,13 +58,14 @@ void PlayerObject::UpdateCameraOffset() {
 		ChangeCamera(_firstPersonCamera); // force camera to be first person if both are selected.
 	}
 
+	_cameraOffset = XMFLOAT3(0, 0, 0);
+
 	if (_firstPersonView) {
 		_cameraOffset = _cameraOffsetFPS;
 	} else if (_thirdPersonView) {
 		_cameraOffset = _cameraOffsetTPS;
 	}
 
-	_cameraOffset = XMFLOAT3(0, 0, 0);
 }
 
 void PlayerObject::CheckInput(double dt) {
@@ -74,6 +75,7 @@ void PlayerObject::CheckInput(double dt) {
 
 	if (movement.x || movement.y || movement.z) {
 		AddPos(movement);
+
 	}
 	if (rotation.x != 0 || rotation.y != 0 || rotation.z != 0) {
 		AddRotation(rotation);
@@ -129,16 +131,16 @@ XMFLOAT3 PlayerObject::HandleViewInput(double dt) {
 
 	// Handle Rotation input
 	if (_input->GetKeyUp(VK_LEFT)) { // Left
-		rotation.x -= _turnSpeed * dt;
+		rotation.y -= _turnSpeed * dt;
 	}
 	if (_input->GetKeyUp(VK_RIGHT)) { // Right
-		rotation.x += _turnSpeed * dt;
-	}
-	if (_input->GetKeyUp(VK_UP)) { // Up?
 		rotation.y += _turnSpeed * dt;
 	}
+	if (_input->GetKeyUp(VK_UP)) { // Up?
+		rotation.x -= _turnSpeed * dt;
+	}
 	if (_input->GetKeyUp(VK_DOWN)) { // Down?
-		rotation.y -= _turnSpeed * dt;
+		rotation.x += _turnSpeed * dt;
 	}
 
 	return rotation;

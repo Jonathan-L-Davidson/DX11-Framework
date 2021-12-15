@@ -1,13 +1,7 @@
 Make camera setpos and whatnot work.
 
-Make player controlled object move and rotate based on keys entered.
-Add play input loop
-
-Have 4 cameras:
-FPS camera
-TPS camera
-Top-down view
-static view
+Fix Top down Camera
+Tie FPS and TPS Camera position based on player position. (no idea how)
 
 
 Add in dynamic plane generation
@@ -45,3 +39,12 @@ Setup wireframe system
 Add hardcoded cube and pyramids back in --- I'm bout to give up on this hardcoded blocks. It's just one mark. No. stop.
 remove hardcodedobjects.h
 
+Make player controlled object move and rotate based on keys entered.
+Add play input loop
+
+
+Have 4 cameras:
+FPS camera
+TPS camera
+Top-down view
+static view
