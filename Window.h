@@ -52,5 +52,8 @@ public:
 
 	XMFLOAT4X4 GetViewMatrix() { return _view; };
 	XMFLOAT4X4 GetProjectionMatrix() { return _projection; };
+
+	Camera* GetCamera() { return _camera; };
+	void SetCamera(Camera* cam) { _camera = cam; };
 };
 

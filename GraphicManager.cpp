@@ -7,7 +7,9 @@ GraphicManager::GraphicManager() {
     _d3dDevice = nullptr;
 	_dxDevice = nullptr;
 	_window = nullptr;
-
+    
+    _input = nullptr;
+    _time = nullptr;
     _objManager = nullptr;
 
 	_swapChain = nullptr;
@@ -172,7 +174,7 @@ void GraphicManager::Draw() {
 
     std::vector<Object*>* objs = _objManager->GetObjects();
     
-    for (int i = 0; i < objs->size(); i++) {
+    for (UINT i = 0; i < objs->size(); i++) {
         objs->at(i)->Draw(_immediateContext, _constantBuffer, _window->GetViewMatrix(), _window->GetProjectionMatrix(), _time->GetTime());
     }
 
@@ -183,21 +185,11 @@ void GraphicManager::Draw() {
         _wireFrameToggle = _wireFrameToggle ? false : true;
     }
 
-    if (_wireFrameToggle) {
-        _immediateContext->RSSetState(_rasterState);
-    } else {
-        _immediateContext->RSSetState(nullptr);
-    }
+    // If _wireframeToggle is true, set renderstate to wireframe mode, else, set it to null.
+    _wireFrameToggle ? _immediateContext->RSSetState(_rasterState) : _immediateContext->RSSetState(nullptr);
 
     //
     // Present our back buffer to our front buffer
     //
     _swapChain->Present(0, 0);
-
-    // TODO: Move this to the input manager.
-    //if (_lastInput > 0) {
-    //    _lastInput--;
-    //} else {
-    //    _lastInput = 0;
-    //}
 }

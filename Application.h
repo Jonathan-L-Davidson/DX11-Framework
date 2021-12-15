@@ -14,6 +14,7 @@
 #include "InputManager.h"
 #include "Object.h"
 #include "SpinningObject.h"
+#include "PlayerObject.h"
 #include "Time.h"
 
 using namespace DirectX;
@@ -29,6 +30,8 @@ private:
 	Time*					_time;
 
 	SpinningObject*			_spinningObject;
+	PlayerObject*			_playerObject;
+
 
 	HRESULT SetupManagers(HINSTANCE hInstance, int nCmdShow);
 	void SetupObjects();

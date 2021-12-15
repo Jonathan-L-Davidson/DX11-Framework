@@ -13,7 +13,7 @@ void ObjectManager::Initialise() {
 
 
 void ObjectManager::Update() {
-	for (int i = 0; i < _objects->size(); i++) {
+	for (UINT i = 0; i < _objects->size(); i++) {
 		_objects->at(i)->Update(_time->GetDelta());
 	}
 }

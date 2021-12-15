@@ -30,6 +30,7 @@ Application::Application() {
     _graphicManager = nullptr;
     _objectManager = nullptr;
     _textureManager = nullptr;
+    _inputManager = nullptr;
 
     _spinningObject = nullptr;
 }
@@ -118,19 +119,32 @@ HRESULT Application::SetupManagers(HINSTANCE hInstance, int nCmdShow) {
 
 void Application::SetupObjects() {
     MeshData* model = new MeshData(OBJLoader::Load("Hercules.obj", _graphicManager->GetDevice()->GetDevice()));
+    MeshData* cubeModel = new MeshData(OBJLoader::Load("cube.obj", _graphicManager->GetDevice()->GetDevice()));
 
     _spinningObject = new SpinningObject(XMFLOAT3(8, 0, 5));
 
     _spinningObject->LoadModel(model);
 
-    Texture* texture = new Texture(L"Pain");
-    _spinningObject->LoadTexture(texture->LoadTexture(L"Hercules_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
+    Texture* planeTexture = new Texture(L"Hercules");
+    _spinningObject->LoadTexture(planeTexture->LoadTexture(L"Hercules_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
+    Texture* cubeTexture = new Texture(L"Cube");
+
+
 
     Shader* shader = new Shader();
     shader->Initialise(L"DX11 Framework.fx", _graphicManager->GetDevice()->GetDevice(), _graphicManager->GetDevice()->GetDeviceContext());
     _spinningObject->LoadShader(shader);
 
     _objectManager->AddObject(_spinningObject);
+
+    _playerObject = new PlayerObject(XMFLOAT3(0,0,-30));
+    _playerObject->LoadTexture(cubeTexture->LoadTexture(L"Crate_COLOR.dds", _graphicManager->GetDevice()->GetDevice()));
+    _playerObject->LoadModel(cubeModel);
+    _playerObject->LoadShader(shader);
+    _playerObject->SetInput(_inputManager);
+    _playerObject->SetWindow(_graphicManager->GetWindow());
+    _playerObject->Initialise();
+    _objectManager->AddObject(_playerObject);
 }
 //void Application::Draw()
 //{

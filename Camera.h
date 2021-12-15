@@ -13,8 +13,8 @@ public:
 	Camera();
 	~Camera();
 
-	void SetEye(XMVECTOR val) { Eye = val; };
-	void SetPos(XMVECTOR val) { At  = val; };
-	void SetUp (XMVECTOR val) { Up  = val; };
+	void SetEye(const XMVECTOR val) { Eye = val; };
+	void SetPos(const XMVECTOR val) { At  = val; };
+	void SetUp (const XMVECTOR val) { Up  = val; };
 };
 
