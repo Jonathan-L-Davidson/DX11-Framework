@@ -7,6 +7,10 @@ class Object {
 private:
 	UINT _id;
 
+	//XMFLOAT3 _f3Position; // Used sepcifically for an easy to access vector for cameras.
+	//XMFLOAT3 _f3Rotation;
+	//XMFLOAT3 _f3Scale;
+
 	XMFLOAT4X4	_position;
 	XMFLOAT4X4	_rotation;
 	XMFLOAT4X4	_scale;
@@ -37,8 +41,6 @@ public:
 		XMFLOAT4X4 fPos = GetPos();
 		XMMATRIX bufferPos = XMLoadFloat4x4(&fPos); // Make an old copy of the current position.
 		XMStoreFloat4x4(&_position, XMMatrixTranslation(pos.x, pos.y, pos.z) * bufferPos); // Multiply the old matrice ontop of the old one..?
-		// TO DO, check if this works!
-		// It works!!
 	};
 
 	void SetPos(XMFLOAT3 pos) { XMStoreFloat4x4(&_position, XMMatrixTranslation(pos.x, pos.y, pos.z)); };

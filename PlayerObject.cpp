@@ -26,10 +26,13 @@ void PlayerObject::Initialise() {
 	
 	_staticCamera = _window->GetCamera();
 	
-	XMVECTOR cameraTopDownPos = XMLoadFloat3(new XMFLOAT3(0, 20, 0));
+		XMVECTOR cameraTopDownEye = XMLoadFloat3(new XMFLOAT3(0, 50, -10));
+	XMVECTOR cameraTopDownPos = XMLoadFloat3(new XMFLOAT3(0, -30, 0));
 
 	_topDownCamera = new Camera();
+	_topDownCamera->SetEye(cameraTopDownEye);
 	_topDownCamera->SetPos(cameraTopDownPos);
+
 
 	_firstPersonCamera = new Camera();
 	_thirdPersonCamera = new Camera();
@@ -41,11 +44,14 @@ void PlayerObject::Update(double dt) {
 	if (_firstPersonView || _thirdPersonView) {
 		UpdateCameraOffset();
 		XMVECTOR offset = XMLoadFloat3(&_cameraOffset);
-		XMMATRIX playerPos = XMLoadFloat4x4(&GetPos());
+		XMFLOAT4X4 f4x4PlayerPos = GetPos();
+		XMMATRIX matrixPlayerPos = XMLoadFloat4x4(&f4x4PlayerPos);
+		XMVECTOR playerPos = XMVector3Transform(offset, matrixPlayerPos);
 
 		// Create position with offset from the player's position.
-		_cameraPosition = XMVector3Transform(offset, playerPos);
-		_currentCamera->SetPos(_cameraPosition);
+		_cameraPosition = XMVectorAdd(playerPos, offset);
+		
+		_currentCamera->SetEye(playerPos);
 	}
 
 	UpdateWorldCoords();
@@ -101,6 +107,15 @@ XMFLOAT3 PlayerObject::HandleMovementInput(double dt) {
 		movement.z -= _moveSpeed * dt;
 	}
 
+	//Handle Speed increase
+	if (_input->GetKeyUp('E')) {
+		_moveSpeed += 50;
+	}
+	//Handle Speed decrease
+	if (_input->GetKeyUp('Q')) {
+		_moveSpeed -= 50;
+	}
+
 	return movement;
 }
 
@@ -141,6 +156,15 @@ XMFLOAT3 PlayerObject::HandleViewInput(double dt) {
 	}
 	if (_input->GetKeyUp(VK_DOWN)) { // Down?
 		rotation.x += _turnSpeed * dt;
+	}
+
+	// Handle rotation speed increase
+	if (_input->GetKeyUp('C')) {
+		_turnSpeed += 5;
+	}
+	// Handle rotation speed decrease
+	if (_input->GetKeyUp('Z')) {
+		_turnSpeed -= 5;
 	}
 
 	return rotation;
