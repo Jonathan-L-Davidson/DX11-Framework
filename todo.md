@@ -1,18 +1,10 @@
-Make camera setpos and whatnot work.
+Marks so far:
+4 + 8 + 15 + 5? + 5 + 0 (JSON CREATION) + 5 + 0 (FPS/TPS) + 0 (ADDITIONAL) + 0 (REPORT)
+42
 
-Fix Top down Camera
-Tie FPS and TPS Camera position based on player position. (no idea how)
+Make object loader create objects from json file. --- 3 marks
+Add skybox
 
-
-Add in dynamic plane generation
-
-Make object loader create objects from json file while accessing shaders and textures from both managers.
-
-Make textures load textures from json file
-
-
-
-Make JSON load camera positions based off JSON file.
 
 Catch up with tutorials
 
@@ -20,9 +12,10 @@ Catch up with tutorials
 Optional extras:
 Add transparency.
 Add height map for plane.
-Add skybox
 Add sun.
 Add lens flare.
+
+
 
 So far:
 DX11 refactor done! Now I can work on object management and other asset management controllers.
@@ -48,3 +41,11 @@ FPS camera
 TPS camera
 Top-down view
 static view
+
+Make camera setpos and whatnot work.
+
+Fix Top down Camera
+
+Tie FPS and TPS Camera position based on player position. (no idea how) --- Given up
+
+Add in dynamic plane generation --- Not worth 2 marks
